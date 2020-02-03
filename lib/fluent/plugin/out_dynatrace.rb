@@ -4,10 +4,9 @@ require 'yajl'
 require 'fluent/plugin/output'
 require 'tempfile'
 require 'openssl'
-require 'zlib'
 
 class Fluent::Plugin::HTTPOutput < Fluent::Plugin::Output
-  Fluent::Plugin.register_output('http-dynatrace', self)
+  Fluent::Plugin.register_output('dynatrace', self)
 
   class RecoverableResponse < StandardError;
   end
@@ -54,7 +53,7 @@ class Fluent::Plugin::HTTPOutput < Fluent::Plugin::Output
   def create_request(record)
     url = format_url()
     uri = URI.parse(url)
-    req = Net::HTTP.const_get('POST').new(uri.request_uri)
+    req = Net::HTTP.const_get('Post').new(uri.request_uri)
     set_body(req, record)
     set_header(req)
     return req, uri
