@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |gem|
   gem.name          = "fluent-plugin-dynatrace"
-  gem.version       = "1.0.0"
+  gem.version       = "1.0.1"
   gem.authors       = ["Michal Jonko"]
   gem.email         = ["michal.jonko@dynatrace.com"]
   gem.summary       = %q{A generic Fluentd output plugin to send logs to an HTTP Dynatrace endpoint}

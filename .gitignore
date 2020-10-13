@@ -60,3 +60,4 @@ build-iPhoneSimulator/
 
 # User-specific stuff
 .idea/
+/Gemfile.lock

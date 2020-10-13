@@ -5,7 +5,8 @@ require 'fluent/plugin/output'
 require 'tempfile'
 require 'openssl'
 
-class Fluent::Plugin::HTTPOutput < Fluent::Plugin::Output
+class Fluent::Plugin::DynatraceOutput < Fluent::Plugin::Output
+
   Fluent::Plugin.register_output('dynatrace', self)
 
   class RecoverableResponse < StandardError;
@@ -22,7 +23,6 @@ class Fluent::Plugin::HTTPOutput < Fluent::Plugin::Output
 
   def configure(conf)
     super
-
     @ssl_verify_mode = OpenSSL::SSL::VERIFY_NONE
     @last_request_time = nil
   end
@@ -41,11 +41,11 @@ class Fluent::Plugin::HTTPOutput < Fluent::Plugin::Output
 
   def set_body(req, record)
     req.body = Yajl.dump(record)
-    req['Content-Type'] = 'application/json'
     req
   end
 
   def set_header(req)
+    req['Content-Type'] = 'application/json; charset=utf-8'
     req['Authorization'] = 'Api-Token ' + @api_token
     req
   end
@@ -54,8 +54,8 @@ class Fluent::Plugin::HTTPOutput < Fluent::Plugin::Output
     url = format_url()
     uri = URI.parse(url)
     req = Net::HTTP.const_get('Post').new(uri.request_uri)
-    set_body(req, record)
     set_header(req)
+    set_body(req, record)
     return req, uri
   end
 
