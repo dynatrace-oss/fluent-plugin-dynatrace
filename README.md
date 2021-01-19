@@ -12,5 +12,6 @@ rake build
       @type dynatrace
       active_gate_url    http://localhost.local/api/logs/ingest
       api_token          api_token
+      ssl_verify_none    false
     </match>
 
