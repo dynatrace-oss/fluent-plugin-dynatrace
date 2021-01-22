@@ -41,7 +41,7 @@ module Fluent
       config_section :buffer do
         config_set_default :chunk_keys, ['tag']
         config_set_default :flush_at_shutdown, true
-        config_set_default :chunk_limit_size, 200
+        config_set_default :chunk_limit_size, 10 * 1024
       end
 
       config_section :inject do
