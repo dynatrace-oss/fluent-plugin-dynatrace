@@ -1,17 +1,24 @@
-# fluent-plugin-dynatrace, a plugin for [Fluentd](http://fluentd.org)
+# fluent-plugin-dynatrace, a plugin for [fluentd](http://fluentd.org)
 
-A generic fluentd output plugin for sending logs to an Generic Log Ingest endpoint on Active Gate.
+> This project is developed and maintained by Dynatrace R&D.
+Currently, this is a prototype and not intended for production use.
+It is not covered by Dynatrace support.
 
+A fluentd output plugin for sending logs to the Dynatrace Generic log ingest API v2.
 
 ## Build
+
+```sh
 rake build
+```
 
 ## Configuration options
 
+```text
     <match *>
       @type dynatrace
-      active_gate_url    http://localhost.local/api/logs/ingest
+      active_gate_url    https://{your-domain}/e/{your-environment-id}/api/v2/logs/ingest
       api_token          api_token
       ssl_verify_none    false
     </match>
-
+```
