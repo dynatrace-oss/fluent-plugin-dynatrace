@@ -13,4 +13,7 @@ Rake::TestTask.new :test do |t|
   t.test_files = FileList['test/**/*_test.rb']
 end
 
+desc 'check for style violations and test failures and build the gem'
+task check: %i[rubocop test build]
+
 task default: :build

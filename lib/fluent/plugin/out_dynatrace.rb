@@ -25,7 +25,7 @@ module Fluent
     class DynatraceOutput < Output
       Fluent::Plugin.register_output('dynatrace', self)
 
-      helpers :compat_parameters, :inject
+      helpers :compat_parameters # add :inject if need be
 
       # Configurations
       desc 'The full URL of the Dynatrace log ingestion endpoint, e.g. https://my-active-gate.example.com/api/logs/ingest'
@@ -44,11 +44,13 @@ module Fluent
         config_set_default :chunk_limit_size, 10 * 1024
       end
 
-      config_section :inject do
-        config_set_default :time_type, :string
-        config_set_default :localtime, false
-      end
-
+      # Default injection parameters.
+      # Requires the :inject helper to be added to the helpers above and the
+      #   inject lines to be uncommented in the #write and #process methods
+      # config_section :inject do
+      #   config_set_default :time_type, :string
+      #   config_set_default :localtime, false
+      # end
       #############################################
 
       attr_accessor :uri, :agent
@@ -73,24 +75,18 @@ module Fluent
 
       #############################################
 
-      def process(tag, es)
-        es = inject_values_to_event_stream(tag, es)
-        es.each do |time, record|
-          line = {
-            timestamp: time * 1000, # expects milliseconds
-            content: record.to_json
-          }
-          send_to_dynatrace("#{line.to_json.chomp}\n")
+      def process(_tag, es)
+        # es = inject_values_to_event_stream(tag, es)
+        es.each do |_time, record|
+          send_to_dynatrace("#{record.to_json.chomp}\n")
         end
       end
 
       def write(chunk)
         body = []
-        chunk.each do |time, record|
-          body.push({
-                      timestamp: time * 1000, # expects milliseconds
-                      content: inject_values_to_record(chunk.metadata.tag, time, record).to_json
-                    })
+        chunk.each do |_time, record|
+          # body.push(inject_values_to_record(chunk.metadata.tag, time, record))
+          body.push(record)
         end
 
         send_to_dynatrace("#{body.to_json.chomp}\n")

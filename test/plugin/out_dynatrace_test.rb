@@ -128,13 +128,10 @@ class MyOutputTest < Test::Unit::TestCase
 
       assert_equal 2, d.instance.agent.result.data.length
 
-      content = JSON.parse(d.instance.agent.result.data[0]['content'])
-      timestamp = d.instance.agent.result.data[0]['timestamp']
+      content = d.instance.agent.result.data[0]
 
       assert_equal content['message'], 'this is a test message'
       assert_equal content['amount'], 53
-
-      assert_equal timestamp, 1_465_555_592_000
     end
   end
 end
