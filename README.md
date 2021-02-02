@@ -51,3 +51,44 @@ This is the API token which will be used to authenticate log ingest requests. It
 - `default: false`
 
 It is recommended to leave this optional configuration set to `false` unless absolutely required. Setting `ssl_verify_none` to `true` causes the output plugin to skip certificate verification when sending log ingest requests to SSL and TLS protected HTTPS endpoints. This option may be required if you are using a self-signed certificate, an expired certificate, or a certificate which was generated for a different domain than the one in use.
+
+## Development
+
+`fluent-plugin-dynatrace` supports Ruby versions `>= 2.4.0` but it is recommended that at least `2.7.2` is used for development. Ruby versions can be managed with tools like [chruby](https://github.com/postmodern/chruby) or [rbenv](https://github.com/rbenv/rbenv).
+
+### Install Dependencies
+
+```sh
+bundle install
+```
+
+### Run All Tests
+
+```sh
+rake test
+```
+
+### Run Specific Tests
+
+```sh
+# Run one test file
+rake test TEST=test/plugin/out_dynatrace_test.rb
+```
+
+
+### Code Style Checks
+
+```sh
+# Check for code style violations
+rake rubocop
+
+# Fix auto-fixable style violations
+rake rubocop:auto_correct
+```
+
+### Run all checks and build
+
+```sh
+# Runs rubocop, tests, and builds the gem
+rake check
+```
