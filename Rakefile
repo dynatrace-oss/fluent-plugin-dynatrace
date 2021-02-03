@@ -13,7 +13,7 @@ Rake::TestTask.new :test do |t|
   t.test_files = FileList['test/plugin/*_test.rb']
 end
 
-Rake::TestTask.new "test:integration" do |t|
+Rake::TestTask.new 'test:integration' do |t|
   t.test_files = FileList['test/integration/*_test.rb']
 end
 
