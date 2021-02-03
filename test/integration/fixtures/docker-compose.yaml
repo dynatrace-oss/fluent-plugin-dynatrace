@@ -1,8 +1,8 @@
 services:
   fluent:
     build:
-      context: ..
-      dockerfile: integration/fluent/Dockerfile
+      context: ../../../
+      dockerfile: test/integration/fixtures/fluent/Dockerfile
     ports:
       - 8080:8080
     links:
