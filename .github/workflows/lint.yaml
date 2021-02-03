@@ -15,6 +15,7 @@ jobs:
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: '2'
+      - run: bundle install
       - run: rake check
       - run: rake test:integration
 
