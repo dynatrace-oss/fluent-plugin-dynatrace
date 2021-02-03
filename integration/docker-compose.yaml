@@ -1,0 +1,13 @@
+services:
+  fluent:
+    build:
+      context: ..
+      dockerfile: integration/fluent/Dockerfile
+    ports:
+      - 8080:8080
+    links:
+      - logsink
+  logsink:
+    build: logsink
+    expose:
+      - 8080
