@@ -6,7 +6,6 @@ require 'net/http'
 class TestFluentIntegration < Test::Unit::TestCase
   def setup
     puts `cd test/integration/fixtures && docker-compose up -d --force-recreate --build`
-    # puts `cd test/integration/fixtures && docker-compose down && docker-compose build && docker-compose up -d --force-recreate`
     puts 'waiting 5s for integration test to start'
     sleep 5
   end
