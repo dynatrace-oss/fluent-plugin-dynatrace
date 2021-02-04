@@ -34,3 +34,17 @@ jobs:
           gem install bundler
           bundle install
       - run: rake test:integration
+
+  notify:
+    needs: integration-test
+    if: always() && needs.integration-test.result == 'failure' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test failure notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_COLOR: '#dc172a'
+          SLACK_TITLE: Integration Test Failure
+          SLACK_MESSAGE: <https://github.com/dynatrace-oss/fluent-plugin-dynatrace/actions/runs/${{ github.run_id }}|Go to test run>
+          SLACK_USERNAME: GitHub Integration Tests
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
