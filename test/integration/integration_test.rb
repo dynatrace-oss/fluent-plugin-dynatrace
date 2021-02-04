@@ -30,7 +30,7 @@ class TestFluentIntegration < Test::Unit::TestCase
     logs = `docker logs fixtures_logsink_1`
 
     line1 = '[{"foo":"bar"},{"abc":"def"},{"xyz":"123"},{"abc":"def"},{"xyz":"123"}]'
-    line2 = '[{"abc":"def"},{"xyz":"123"}]'
+    line2 = '[{"abc":"def"},{"xyz":"123"}] this will cause a failure'
     assert_equal("#{line1}\n#{line2}\n", logs)
   end
 end
