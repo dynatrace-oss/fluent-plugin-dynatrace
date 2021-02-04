@@ -45,6 +45,6 @@ jobs:
         env:
           SLACK_COLOR: '#dc172a'
           SLACK_TITLE: Integration Test Failure
-          SLACK_MESSAGE: ''
+          SLACK_MESSAGE: <https://https://github.com/dynatrace-oss/fluent-plugin-dynatrace/actions/runs/${{ github.run_id }}|Go to test run>
           SLACK_USERNAME: GitHub Integration Tests
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
