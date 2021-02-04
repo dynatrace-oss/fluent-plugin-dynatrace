@@ -34,11 +34,17 @@ jobs:
           gem install bundler
           bundle install
       - run: rake test:integration
+
+  notify:
+    needs: integration-test
+    if: needs.integration-test.result == 'failure'
+    runs-on: ubuntu-latest
+    steps:
       - name: Test failure notification
-        if: failure()
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_COLOR: '#dc172a'
           SLACK_TITLE: Integration Test Failure
+          SLACK_MESSAGE: ''
           SLACK_USERNAME: GitHub Integration Tests
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
