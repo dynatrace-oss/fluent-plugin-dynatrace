@@ -37,7 +37,7 @@ jobs:
 
   notify:
     needs: integration-test
-    if: needs.integration-test.result == 'failure'
+    if: always() && needs.integration-test.result == 'failure'
     runs-on: ubuntu-latest
     steps:
       - name: Test failure notification
