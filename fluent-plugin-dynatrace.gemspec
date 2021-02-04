@@ -7,7 +7,7 @@ Gem::Specification.new do |gem|
   gem.email         = ['opensource@dynatrace.com']
   gem.summary       = 'A generic Fluentd output plugin to send logs to Dynatrace'
   gem.description   = gem.summary
-  gem.homepage      = 'https://github.com/Dynatrace-OSS/fluent-plugin-dynatrace'
+  gem.homepage      = 'https://github.com/dynatrace-oss/fluent-plugin-dynatrace'
   gem.licenses      = ['Apache-2.0']
 
   gem.files         = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
