@@ -3,11 +3,16 @@
 require './lib/fluent/plugin/dynatrace_constants'
 
 Gem::Specification.new 'fluent-plugin-dynatrace', Fluent::Plugin::DynatraceOutputConstants.version do |gem|
-  gem.authors       = ['Dynatrace Open Source']
-  gem.email         = ['opensource@dynatrace.com']
-  gem.summary       = 'A generic Fluentd output plugin to send logs to Dynatrace'
-  gem.homepage      = 'https://github.com/Dynatrace-OSS/fluent-plugin-dynatrace'
+  gem.authors       = ['Dynatrace Open Source Engineering']
+  gem.summary       = 'A fluentd output plugin for sending logs to the Dynatrace Generic log ingest API v2'
+  gem.homepage      = 'https://www.dynatrace.com/'
   gem.licenses      = ['Apache-2.0']
+
+  gem.metadata = {
+    'bug_tracker_uri' => 'https://github.com/dynatrace-oss/fluent-plugin-dynatrace/issues',
+    'documentation_uri' => 'https://github.com/dynatrace-oss/fluent-plugin-dynatrace',
+    'source_code_uri' => 'https://github.com/dynatrace-oss/fluent-plugin-dynatrace'
+  }
 
   gem.files         = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
   gem.require_paths = ['lib']
