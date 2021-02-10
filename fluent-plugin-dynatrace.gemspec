@@ -2,8 +2,11 @@
 
 require './lib/fluent/plugin/dynatrace_constants'
 
-Gem::Specification.new 'fluent-plugin-dynatrace', Fluent::Plugin::DynatraceOutputConstants.version do |gem|
+Gem::Specification.new do |gem|
+  gem.name          = 'fluent-plugin-dynatrace'
+  gem.version       = Fluent::Plugin::DynatraceOutputConstants.version
   gem.authors       = ['Dynatrace Open Source Engineering']
+  gem.email         = ['opensource@dynatrace.com']
   gem.summary       = 'A fluentd output plugin for sending logs to the Dynatrace Generic log ingest API v2'
   gem.homepage      = 'https://www.dynatrace.com/'
   gem.licenses      = ['Apache-2.0']
