@@ -1,16 +1,16 @@
-# fluent-plugin-dynatrace, a plugin for [fluentd](http://fluentd.org)
+# fluent-plugin-dynatrace, a plugin for [fluentd](https://www.fluentd.org/)
 
 > This project is developed and maintained by Dynatrace R&D.
 Currently, this is a prototype and not intended for production use.
 It is not covered by Dynatrace support.
 
-A fluentd output plugin for sending logs to the Dynatrace Generic log ingest API v2.
+A fluentd output plugin for sending logs to the Dynatrace [Generic log ingest API v2](https://www.dynatrace.com/support/help/how-to-use-dynatrace/log-monitoring/log-monitoring-v2/post-log-ingest/).
 
 ## Requirements
 
 - An instance of fluentd from which logs should be exported
-- The log ingest v2 API must be enabled on your active gate
-- An API token with the `Log import` permission
+- An ActiveGate with the Generic log ingest API v2 enabled as described in the [Dynatrace documentation](https://www.dynatrace.com/support/help/how-to-use-dynatrace/log-monitoring/log-monitoring-v2/log-data-ingestion/)
+- A [Dynatrace API token](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/) with the `Log import` permission
 
 ## Configuration options
 
@@ -41,13 +41,13 @@ The `@type` directive tells fluentd which plugin should be used for the correspo
 
 - `required`
 
-This is the full URL of the logs ingest 2.0 API endpoint on your active gate.
+This is the full URL of the [Generic log ingest API v2](https://www.dynatrace.com/support/help/how-to-use-dynatrace/log-monitoring/log-monitoring-v2/post-log-ingest/) endpoint on your ActiveGate.
 
 ### `api_token`
 
 - `required`
 
-This is the API token which will be used to authenticate log ingest requests. It should be assigned only the `Log import` permission.
+This is the [Dynatrace API token](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/) which will be used to authenticate log ingest requests. It should be assigned only the `Log import` permission.
 
 ### `ssl_verify_none`
 
@@ -78,7 +78,6 @@ rake test
 # Run one test file
 rake test TEST=test/plugin/out_dynatrace_test.rb
 ```
-
 
 ### Code Style Checks
 
