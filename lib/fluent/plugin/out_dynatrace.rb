@@ -102,7 +102,6 @@ module Fluent
       #############################################
 
       def send_to_dynatrace(body)
-        log.info('sending for some reason?')
         agent.start unless agent.started?
 
         req = Net::HTTP::Post.new @uri
