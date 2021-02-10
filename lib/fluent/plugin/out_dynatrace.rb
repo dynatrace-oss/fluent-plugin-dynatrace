@@ -16,6 +16,7 @@
 
 require 'fluent/plugin/output'
 require 'net/http'
+require_relative 'dynatrace_constants'
 
 module Fluent
   module Plugin
@@ -101,13 +102,22 @@ module Fluent
 
       #############################################
 
-      def send_to_dynatrace(body)
-        agent.start unless agent.started?
+      def user_agent
+        "fluent-plugin-dynatrace v#{DynatraceOutputConstants.version}"
+      end
 
-        req = Net::HTTP::Post.new @uri
+      def prepare_request(uri)
+        req = Net::HTTP::Post.new(uri, { 'User-Agent' => user_agent })
         req['Content-Type'] = 'application/json; charset=utf-8'
         req['Authorization'] = "Api-Token #{@api_token}"
 
+        req
+      end
+
+      def send_to_dynatrace(body)
+        agent.start unless agent.started?
+
+        req = prepare_request(@uri)
         res = @agent.request(req, body)
 
         return if res.is_a?(Net::HTTPSuccess)

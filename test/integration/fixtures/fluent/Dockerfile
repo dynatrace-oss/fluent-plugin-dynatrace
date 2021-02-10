@@ -9,6 +9,7 @@ RUN chmod +x /fluentd/entrypoint.sh
 
 COPY test/integration/fixtures/fluent/fluent.conf /fluentd/etc/fluent.conf
 COPY lib/fluent/plugin/out_dynatrace.rb /fluentd/plugins/
+COPY lib/fluent/plugin/dynatrace_constants.rb /fluentd/plugins/
 
 ENTRYPOINT ["tini", "--", "/fluentd/entrypoint.sh"]
 
