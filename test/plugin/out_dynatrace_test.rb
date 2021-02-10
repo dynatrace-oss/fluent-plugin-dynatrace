@@ -18,16 +18,17 @@ require 'fluent/test'
 require 'fluent/test/helpers'
 require 'fluent/test/driver/output'
 require 'fluent/plugin/out_dynatrace'
+require 'fluent/plugin/dynatrace_constants'
 require 'webrick'
 
 class FakeAgent
-  Result = Struct.new('Result', :data)
+  Result = Struct.new('Result', :data, :headers)
 
   attr_reader :result, :original_agent
   attr_accessor :use_ssl, :verify_mode
 
   def initialize(original_agent)
-    @result = Result.new(nil)
+    @result = Result.new(nil, {})
     @started = false
     @original_agent = original_agent
   end
@@ -48,11 +49,9 @@ class FakeAgent
     raise 'expected POST' unless req.method == 'POST'
     raise 'expected application/json' unless req.content_type == 'application/json'
 
-    # @result.http_method = req.method
-    # @result.content_type = req.content_type
-    # req.each do |key, value|
-    #   @result.headers[key] = value
-    # end
+    req.each do |key, value|
+      @result.headers[key] = value
+    end
 
     @result.data = JSON.parse(body)
   end
@@ -144,6 +143,8 @@ class MyOutputTest < Test::Unit::TestCase
 
       content = d.instance.agent.result.data[0]
 
+      assert_equal "fluent-plugin-dynatrace v#{Fluent::Plugin::DynatraceOutputConstants.version}",
+                   d.instance.agent.result.headers['user-agent']
       assert_equal content['message'], 'this is a test message'
       assert_equal content['amount'], 53
     end

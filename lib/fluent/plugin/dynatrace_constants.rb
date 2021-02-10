@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright 2021 Dynatrace LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM fluent/fluentd:edge
-
-LABEL maintainer="Daniel Dyla <Daniel.Dyla@dynatrace.com>"
-USER root
-
-# the build context is the root of the repo to allow access to the plugin rb
-COPY test/integration/fixtures/fluent/entrypoint.sh /fluentd/entrypoint.sh
-RUN chmod +x /fluentd/entrypoint.sh
-
-COPY test/integration/fixtures/fluent/fluent.conf /fluentd/etc/fluent.conf
-COPY lib/fluent/plugin/out_dynatrace.rb /fluentd/plugins/
-COPY lib/fluent/plugin/dynatrace_constants.rb /fluentd/plugins/
-
-ENTRYPOINT ["tini", "--", "/fluentd/entrypoint.sh"]
-
-USER fluent
+module Fluent
+  module Plugin
+    # Constants for use in Dynatrace output plugin
+    class DynatraceOutputConstants
+      # The version of the Dynatrace output plugin
+      def self.version
+        '0.1.0'
+      end
+    end
+  end
+end
