@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require './lib/fluent/plugin/dynatrace_constants'
+require 'rake'
 
 Gem::Specification.new do |gem|
   gem.name          = 'fluent-plugin-dynatrace'
@@ -17,7 +18,8 @@ Gem::Specification.new do |gem|
     'source_code_uri' => 'https://github.com/dynatrace-oss/fluent-plugin-dynatrace'
   }
 
-  gem.files         = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
+  gem.files         = FileList['lib/**/*.rb', 'LICENSE']
+
   gem.require_paths = ['lib']
 
   gem.required_ruby_version = '>= 2.4.0'
