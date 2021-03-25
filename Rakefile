@@ -27,12 +27,12 @@ Rake::TestTask.new :test do |t|
   t.test_files = FileList['test/plugin/*_test.rb']
 end
 
-Rake::TestTask.new 'test:integration' do |t|
-  t.test_files = FileList['test/integration/*_test.rb']
+Rake::TestTask.new 'test:integration:fluent' do |t|
+  t.test_files = FileList['test/integration_fluent/*_test.rb']
 end
 
-Rake::TestTask.new 'test:integration:jenkins' do |t|
-  t.test_files = FileList['test/integration_jenkins/*_test.rb']
+Rake::TestTask.new 'test:integration:dtcluster' do |t|
+  t.test_files = FileList['test/integration_dtcluster/*_test.rb']
 end
 
 desc 'check for style violations and test failures and build the gem'
