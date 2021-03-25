@@ -26,15 +26,17 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
 
   def active_gate_url
     # Expect an active gate url in the format https://127.0.0.1:9999/e/abc12345
-    url = ENV["ACTIVE_GATE_URL"]
-    raise "expected environment variable ACTIVE_GATE_URL" if url == nil
+    url = ENV['ACTIVE_GATE_URL']
+    raise 'expected environment variable ACTIVE_GATE_URL' if url.nil?
+
     url
   end
 
   def api_token
     # Expect an API token with at least LogImport and LogExport permission
-    token = ENV["API_TOKEN"]
-    raise "expected environment variable API_TOKEN" if token == nil
+    token = ENV['API_TOKEN']
+    raise 'expected environment variable API_TOKEN' if token.nil?
+
     token
   end
 
@@ -44,7 +46,6 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
 
   # default configuration for tests
   def config
-
     # ssl_verify_none required to use https to access a private active gate by IP address
     %(
     active_gate_url #{active_gate_url}/api/v2/logs/ingest
@@ -60,7 +61,7 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
 
   sub_test_case 'tests for #write' do
     test 'Write all records as a JSON array' do
-      nonce = (0...10).map { (65 + rand(26)).chr }.join
+      nonce = (0...10).map { rand(65..90).chr }.join
       puts "Generating random message: #{nonce}"
       d = create_driver
       d.run do
@@ -68,12 +69,13 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
       end
 
       (0...40).each do |i|
-        puts "Getting logs attempt #{i+1}/40"
+        puts "Getting logs attempt #{i + 1}/40"
         break if try_get_log(nonce)
+
         sleep 10
       end
 
-      raise "Could not retrieve log after 40 attempts"
+      raise 'Could not retrieve log after 40 attempts'
     end
   end
 
@@ -83,18 +85,21 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
     agent.use_ssl = true
     agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    req = Net::HTTP::Get.new(uri, { 'User-Agent' => "fluent-plugin-dynatrace-tests v#{Fluent::Plugin::DynatraceOutputConstants.version}" })
+    options = {
+      'User-Agent' => "fluent-plugin-dynatrace-tests v#{Fluent::Plugin::DynatraceOutputConstants.version}"
+    }
+    req = Net::HTTP::Get.new(uri, options)
     req['Authorization'] = "Api-Token #{api_token}"
 
     res = agent.request(req)
 
-    raise "#{res.code} #{res.message}" if not res.is_a?(Net::HTTPSuccess)
+    raise "#{res.code} #{res.message}" unless res.is_a?(Net::HTTPSuccess)
 
     body = JSON.parse(res.body)
-    results = body["results"]
+    results = body['results']
 
-    return nil if results.length == 0
+    return nil if results.length.zero?
 
-    return results[0]["content"] == nonce
+    results[0]['content'] == nonce
   end
 end
