@@ -72,6 +72,7 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
         puts "Getting logs attempt #{i + 1}/40"
         break if try_get_log(nonce)
         raise 'Could not retrieve log after 40 attempts' if i == 39
+
         sleep 10
       end
     end
@@ -97,7 +98,8 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
     results = body['results']
 
     return false if results.length.zero?
+
     assert_equal(results[0]['content'], nonce)
-    return true
+    true
   end
 end
