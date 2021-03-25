@@ -61,7 +61,7 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
     Fluent::Test::Driver::Output.new(Fluent::Plugin::DynatraceOutput).configure(conf)
   end
 
-  test 'Export logs to dynatrace' do
+  test 'Export logs to Dynatrace' do
     nonce = (0...10).map { rand(65..90).chr }.join
     puts "Generating random message: #{nonce}"
     d = create_driver
