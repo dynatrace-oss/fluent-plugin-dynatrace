@@ -71,7 +71,6 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
       (0...40).each do |i|
         puts "Getting logs attempt #{i + 1}/40"
         break if try_get_log(nonce)
-
         sleep 10
       end
 
@@ -98,8 +97,8 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
     body = JSON.parse(res.body)
     results = body['results']
 
-    return nil if results.length.zero?
-
-    results[0]['content'] == nonce
+    return false if results.length.zero?
+    assert_equal(results[0]['content'], nonce)
+    return true
   end
 end
