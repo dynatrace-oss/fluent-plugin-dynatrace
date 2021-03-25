@@ -46,11 +46,11 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
 
   # default configuration for tests
   def config
-    # ssl_verify_none required to use https to access a private active gate by IP address
     %(
     active_gate_url #{active_gate_url}/api/v2/logs/ingest
     api_token       #{api_token}
 
+    # ssl_verify_none required to use https to access a private active gate by IP address
     ssl_verify_none    true
     )
   end
