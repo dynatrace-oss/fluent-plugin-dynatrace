@@ -25,11 +25,17 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
   include Fluent::Test::Helpers
 
   def active_gate_url
-    ENV["ACTIVE_GATE_URL"]
+    # Expect an active gate url in the format https://127.0.0.1:9999/e/abc12345
+    url = ENV["ACTIVE_GATE_URL"]
+    raise "expected environment variable ACTIVE_GATE_URL" if url == nil
+    url
   end
 
   def api_token
-    ENV["API_TOKEN"]
+    # Expect an API token with at least LogImport and LogExport permission
+    token = ENV["API_TOKEN"]
+    raise "expected environment variable API_TOKEN" if token == nil
+    token
   end
 
   def setup
@@ -38,9 +44,12 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
 
   # default configuration for tests
   def config
+
+    # ssl_verify_none required to use https to access a private active gate by IP address
     %(
     active_gate_url #{active_gate_url}/api/v2/logs/ingest
     api_token       #{api_token}
+
     ssl_verify_none    true
     )
   end
@@ -60,19 +69,15 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
 
       (0...40).each do |i|
         puts "Getting logs attempt #{i+1}/40"
-
-        log = get_log(nonce)
-
+        log = try_get_log(nonce)
         break if log != nil
-
         sleep 10
       end
 
-      puts 'got here'
     end
   end
 
-  def get_log(nonce)
+  def try_get_log(nonce)
     uri = URI.parse("#{active_gate_url}/api/v2/logs/search?from=now-30m&limit=1000&query=#{nonce}&sort=-timestamp")
     agent = Net::HTTP.new(uri.host, uri.port)
     agent.use_ssl = true
@@ -90,8 +95,6 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
 
     return nil if results.length == 0
 
-    puts results[0]
-    
-    return true if results[0]["content"] == nonce
+    return results[0]["content"] == nonce
   end
 end
