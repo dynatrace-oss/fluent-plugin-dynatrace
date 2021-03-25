@@ -14,7 +14,7 @@
 
 FROM fluent/fluentd:edge
 
-LABEL maintainer="Daniel Dyla <Daniel.Dyla@dynatrace.com>"
+LABEL maintainer="Dyntrace Open Source Engineering <opensource@dynatrace.com>"
 USER root
 
 # the build context is the root of the repo to allow access to the plugin rb
