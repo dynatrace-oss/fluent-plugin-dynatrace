@@ -68,7 +68,7 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
         d.feed('tag', event_time, { 'message' => nonce })
       end
 
-      (0...40).each do |i|
+      40.times do |i|
         puts "Getting logs attempt #{i + 1}/40"
         break if try_get_log(nonce)
         raise 'Could not retrieve log after 40 attempts' if i == 39
