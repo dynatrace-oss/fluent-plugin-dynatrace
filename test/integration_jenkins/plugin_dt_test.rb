@@ -71,10 +71,9 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
       (0...40).each do |i|
         puts "Getting logs attempt #{i + 1}/40"
         break if try_get_log(nonce)
+        raise 'Could not retrieve log after 40 attempts' if i == 39
         sleep 10
       end
-
-      raise 'Could not retrieve log after 40 attempts'
     end
   end
 
