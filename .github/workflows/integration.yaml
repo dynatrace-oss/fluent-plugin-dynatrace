@@ -33,7 +33,7 @@ jobs:
       - run: |
           gem install bundler
           bundle install
-      - run: rake test:integration
+      - run: rake test:integration:fluent
 
   notify:
     needs: integration-test

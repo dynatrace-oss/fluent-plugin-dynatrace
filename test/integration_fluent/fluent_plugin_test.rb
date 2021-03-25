@@ -17,18 +17,18 @@
 require 'test/unit'
 require 'net/http'
 
-class TestFluentIntegration < Test::Unit::TestCase
+class TestFluentPluginIntegration < Test::Unit::TestCase
   def setup
-    puts `cd test/integration/fixtures && docker-compose up -d --force-recreate --build`
+    puts `cd test/integration_fluent/fixtures && docker-compose up -d --force-recreate --build`
     puts 'waiting 5s for integration test to start'
     sleep 5
   end
 
   def teardown
-    puts `cd test/integration/fixtures && docker-compose down`
+    puts `cd test/integration_fluent/fixtures && docker-compose down`
   end
 
-  def test_integration
+  def test_fluent_plugin_integration
     puts 'sending logs'
     uri = URI.parse('http://localhost:8080/dt.match')
     http = Net::HTTP.new(uri.host, uri.port)
