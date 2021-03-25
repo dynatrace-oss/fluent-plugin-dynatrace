@@ -21,6 +21,8 @@ require 'fluent/test/driver/output'
 require 'fluent/plugin/out_dynatrace'
 require 'json'
 
+MAX_ATTEMPTS = 20
+
 class TestPluginDynatraceIntegration < Test::Unit::TestCase
   include Fluent::Test::Helpers
 
@@ -59,22 +61,20 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
     Fluent::Test::Driver::Output.new(Fluent::Plugin::DynatraceOutput).configure(conf)
   end
 
-  sub_test_case 'tests for #write' do
-    test 'Write all records as a JSON array' do
-      nonce = (0...10).map { rand(65..90).chr }.join
-      puts "Generating random message: #{nonce}"
-      d = create_driver
-      d.run do
-        d.feed('tag', event_time, { 'message' => nonce })
-      end
+  test 'Export logs to dynatrace' do
+    nonce = (0...10).map { rand(65..90).chr }.join
+    puts "Generating random message: #{nonce}"
+    d = create_driver
+    d.run do
+      d.feed('tag', event_time, { 'message' => nonce })
+    end
 
-      40.times do |i|
-        puts "Getting logs attempt #{i + 1}/40"
-        break if try_get_log(nonce)
-        raise 'Could not retrieve log after 40 attempts' if i == 39
+    MAX_ATTEMPTS.times do |i|
+      puts "Getting logs attempt #{i + 1}/#{MAX_ATTEMPTS}"
+      break if try_get_log(nonce)
+      raise "Could not retrieve log after #{MAX_ATTEMPTS} attempts" if i == MAX_ATTEMPTS - 1
 
-        sleep 10
-      end
+      sleep 10
     end
   end
 
