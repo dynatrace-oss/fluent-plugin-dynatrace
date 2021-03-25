@@ -127,12 +127,12 @@ module Fluent
 
       def failure_message(res)
         res_summary = if res
-                        "#{res.code} #{res.message}"
+                        "#{res.code} #{res.message} #{res.body}"
                       else
                         'res=nil'
                       end
 
-        "failed to #{req.method} #{uri} (#{res_summary})"
+        "failed to request #{uri} (#{res_summary})"
       end
     end
   end
