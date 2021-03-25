@@ -33,7 +33,7 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
   end
 
   def api_token
-    # Expect an API token with at least LogImport and LogExport permission
+    # Expect an API token with LogImport and LogExport permissions
     token = ENV['API_TOKEN']
     raise 'expected environment variable API_TOKEN' if token.nil?
 
