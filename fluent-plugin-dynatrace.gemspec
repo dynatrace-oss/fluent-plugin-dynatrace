@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.authors       = ['Dynatrace Open Source Engineering']
   gem.email         = ['opensource@dynatrace.com']
   gem.summary       = 'A fluentd output plugin for sending logs to the Dynatrace Generic log ingest API v2'
-  gem.homepage      = 'https://www.dynatrace.com/'
+  gem.homepage      = 'https://github.com/dynatrace-oss/fluent-plugin-dynatrace'
   gem.licenses      = ['Apache-2.0']
 
   gem.metadata = {
