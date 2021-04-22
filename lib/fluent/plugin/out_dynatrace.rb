@@ -24,6 +24,8 @@ module Fluent
     class DynatraceOutput < Output
       Fluent::Plugin.register_output('dynatrace', self)
 
+      AGENT_LOCK = Mutex.new
+
       helpers :compat_parameters # add :inject if need be
 
       # Configurations
@@ -118,11 +120,13 @@ module Fluent
         agent.start unless agent.started?
 
         req = prepare_request(@uri)
-        res = @agent.request(req, body)
+        AGENT_LOCK.synchronize {
+          res = @agent.request(req, body)
 
-        return if res.is_a?(Net::HTTPSuccess)
+          return if res.is_a?(Net::HTTPSuccess)
 
-        raise failure_message res
+          raise failure_message res
+        }
       end
 
       def failure_message(res)
