@@ -24,7 +24,7 @@ module Fluent
     class DynatraceOutput < Output
       Fluent::Plugin.register_output('dynatrace', self)
 
-      AGENT_LOCK = Mutex.new
+      HTTP_REQUEST_LOCK = Mutex.new
 
       helpers :compat_parameters # add :inject if need be
 
@@ -117,7 +117,7 @@ module Fluent
       end
 
       def send_to_dynatrace(body)
-        AGENT_LOCK.synchronize do
+        HTTP_REQUEST_LOCK.synchronize do
           agent.start unless agent.started?
 
           req = prepare_request(@uri)
