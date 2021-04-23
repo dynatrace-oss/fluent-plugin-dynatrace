@@ -1,8 +1,6 @@
 # fluent-plugin-dynatrace, a plugin for [fluentd](https://www.fluentd.org/)
 
 > This project is developed and maintained by Dynatrace R&D.
-Currently, this is a prototype and not intended for production use.
-It is not covered by Dynatrace support.
 
 A fluentd output plugin for sending logs to the Dynatrace [Generic log ingest API v2](https://www.dynatrace.com/support/help/how-to-use-dynatrace/log-monitoring/log-monitoring-v2/post-log-ingest/).
 
