@@ -120,13 +120,13 @@ module Fluent
         agent.start unless agent.started?
 
         req = prepare_request(@uri)
-        AGENT_LOCK.synchronize {
+        AGENT_LOCK.synchronize do
           res = @agent.request(req, body)
 
           return if res.is_a?(Net::HTTPSuccess)
 
           raise failure_message res
-        }
+        end
       end
 
       def failure_message(res)
