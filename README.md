@@ -40,6 +40,9 @@ Below is an example configuration which sends all logs with tags starting with `
 </match>
 ```
 
+If configured with custom `<buffer>` settings, it is recommended to set `flush_thread_count` to `1`.
+The output plugin is limited to a single outgoing connection to Dynatrace and multiple export threads will have limited impact on export latency.
+
 ### match directive
 
 - `required`
