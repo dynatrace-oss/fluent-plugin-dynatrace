@@ -117,10 +117,10 @@ module Fluent
       end
 
       def send_to_dynatrace(body)
-        agent.start unless agent.started?
-
-        req = prepare_request(@uri)
         AGENT_LOCK.synchronize do
+          agent.start unless agent.started?
+
+          req = prepare_request(@uri)
           res = @agent.request(req, body)
 
           return if res.is_a?(Net::HTTPSuccess)

@@ -25,12 +25,13 @@ class FakeAgent
   Result = Struct.new('Result', :data, :headers)
 
   attr_reader :result, :original_agent
-  attr_accessor :use_ssl, :verify_mode
+  attr_accessor :use_ssl, :verify_mode, :processing_request
 
   def initialize(original_agent)
     @result = Result.new(nil, {})
     @started = false
     @original_agent = original_agent
+    @processing_request = false
   end
 
   def started?
@@ -46,14 +47,30 @@ class FakeAgent
   def finish; end
 
   def request(req, body)
-    raise 'expected POST' unless req.method == 'POST'
-    raise 'expected application/json' unless req.content_type == 'application/json'
+    raise 'concurrent request' if @processing_request
+
+    @processing_request = true
+
+    if req.method != 'POST'
+      @processing_request = false
+      raise 'expected POST'
+    end
+
+    if req.content_type != 'application/json'
+      @processing_request = false
+      raise 'expected application/json'
+    end
+
+    # slow endpoint to ensure the concurrency test is reliable
+    sleep 1 if req.path == '/slow'
 
     req.each do |key, value|
       @result.headers[key] = value
     end
 
     @result.data = JSON.parse(body)
+    @processing_request = false
+    @result.data
   end
 end
 
@@ -147,6 +164,39 @@ class MyOutputTest < Test::Unit::TestCase
                    d.instance.agent.result.headers['user-agent']
       assert_equal content['message'], 'this is a test message'
       assert_equal content['amount'], 53
+    end
+
+    test 'multiple threads should not make concurrent requests' do
+      d = create_driver(%(
+        active_gate_url https://example.dynatrace.com/slow
+        api_token       secret
+        ssl_verify_none true
+
+        <buffer>
+          @type memory
+          flush_mode interval
+          flush_thread_count 2
+          chunk_limit_records 2
+        </buffer>
+      ))
+      t = event_time('2016-06-10 19:46:32 +0900')
+
+      t1 = Thread.new do
+        d.run do
+          d.feed('tag', t, { 'message' => 'this is a test message', 'amount' => 53 })
+          d.feed('tag', t, { 'message' => 'this is a second test message', 'amount' => 54 })
+        end
+      end
+
+      t2 = Thread.new do
+        d.run do
+          d.feed('tag', t, { 'message' => 'this is a test message', 'amount' => 53 })
+          d.feed('tag', t, { 'message' => 'this is a second test message', 'amount' => 54 })
+        end
+      end
+
+      t1.join
+      t2.join
     end
   end
 end
