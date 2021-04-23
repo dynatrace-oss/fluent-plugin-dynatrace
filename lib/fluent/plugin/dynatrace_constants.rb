@@ -20,7 +20,7 @@ module Fluent
     class DynatraceOutputConstants
       # The version of the Dynatrace output plugin
       def self.version
-        '0.1.3'
+        '0.1.4'
       end
     end
   end
