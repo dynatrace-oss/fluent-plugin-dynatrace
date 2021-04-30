@@ -65,7 +65,7 @@ This is the full URL of the [Generic log ingest API v2](https://www.dynatrace.co
 
 - `required`
 
-This is the [Dynatrace API token](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/) which will be used to authenticate log ingest requests. It should be assigned only the `Log import` permission.
+This is the [Dynatrace API token](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/) which will be used to authenticate log ingest requests. It should be assigned only the `logs.ingest` (Ingest Logs) scope.
 
 ### `ssl_verify_none`
 
