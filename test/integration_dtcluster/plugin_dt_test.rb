@@ -35,7 +35,7 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
   end
 
   def api_token
-    # Expect an API token with LogImport and LogExport permissions
+    # Expect an API token with `logs.ingest` (Ingest Logs) and `logs.read` (Read Logs) scope
     token = ENV['API_TOKEN']
     raise 'expected environment variable API_TOKEN' if token.nil?
 

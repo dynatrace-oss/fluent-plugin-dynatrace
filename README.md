@@ -9,7 +9,7 @@ A fluentd output plugin for sending logs to the Dynatrace [Generic log ingest AP
 - An instance of fluentd >= v1.0 from which logs should be exported
 - Ruby version >= 2.4.0
 - An ActiveGate with the Generic log ingest API v2 enabled as described in the [Dynatrace documentation](https://www.dynatrace.com/support/help/how-to-use-dynatrace/log-monitoring/log-monitoring-v2/log-data-ingestion/)
-- A [Dynatrace API token](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/) with the `Log import` permission
+- A [Dynatrace API token](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/) with the `logs.ingest` (Ingest Logs) scope
 
 ## Installation
 
@@ -65,7 +65,7 @@ This is the full URL of the [Generic log ingest API v2](https://www.dynatrace.co
 
 - `required`
 
-This is the [Dynatrace API token](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/) which will be used to authenticate log ingest requests. It should be assigned only the `Log import` permission.
+This is the [Dynatrace API token](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/) which will be used to authenticate log ingest requests. It should be assigned only the `logs.ingest` (Ingest Logs) scope.
 
 ### `ssl_verify_none`
 
