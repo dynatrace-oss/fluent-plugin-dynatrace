@@ -34,7 +34,7 @@ Below is an example configuration which sends all logs with tags starting with `
 ```
 <match dt.*>
   @type              dynatrace
-  active_gate_url    https://abc12345.live.dynatrace.com/api/v2/logs/ingest
+  active_gate_url    https://{your-environment-activegate}:8021/e/{your-tenant}/api/v2/logs/ingest
   api_token          api_token
   ssl_verify_none    false
 </match>
