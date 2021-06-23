@@ -29,10 +29,10 @@ td-agent-gem install fluent-plugin-dynatrace
 
 ## Configuration options
 
-Below is an example configuration which sends all logs with tags starting with `dt.` to Dynatrace.
+Below is an example configuration which sends all logs with tags starting with `dt` to Dynatrace.
 
 ```
-<match dt.*>
+<match dt.**>
   @type              dynatrace
   active_gate_url    https://{your-environment-activegate}:8021/e/{your-tenant}/api/v2/logs/ingest
   api_token          api_token
