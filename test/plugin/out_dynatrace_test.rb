@@ -166,6 +166,14 @@ class MyOutputTest < Test::Unit::TestCase
       assert_equal content['amount'], 53
     end
 
+    test 'should not export an empty payload' do
+      d = create_driver
+      d.run do
+      end
+
+      assert_equal d.instance.agent.started? false
+    end
+
     test 'multiple threads should not make concurrent requests' do
       d = create_driver(%(
         active_gate_url https://example.dynatrace.com/slow
