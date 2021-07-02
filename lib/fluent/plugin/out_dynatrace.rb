@@ -91,7 +91,7 @@ module Fluent
           body.push(record)
         end
 
-        send_to_dynatrace("#{body.to_json.chomp}\n")
+        send_to_dynatrace("#{body.to_json.chomp}\n") unless body.empty?
       end
 
       #############################################
