@@ -83,7 +83,7 @@ module Fluent
         # es = inject_values_to_event_stream(tag, es)
         es.each do |_time, record|
           records++
-          send_to_dynatrace("#{record.to_json.chomp}\n")
+          send_to_dynatrace(record)
         end
         log.debug("#process sent #{records} records")
       end
@@ -97,7 +97,7 @@ module Fluent
         end
 
         log.debug("#write sent #{body.length} records")
-        send_to_dynatrace("#{body.to_json.chomp}\n") unless body.empty?
+        send_to_dynatrace(body) unless body.empty?
       end
 
       #############################################
@@ -124,15 +124,16 @@ module Fluent
         req
       end
 
-      def send_to_dynatrace(body)
-        log("#send_to_dynatrace")
+      def send_to_dynatrace(payload)
+        body = "#{payload.to_json.chomp}\n"
+        log.debug("#send_to_dynatrace")
         HTTP_REQUEST_LOCK.synchronize do
           agent.start unless agent.started?
 
           req = prepare_request(@uri)
           res = @agent.request(req, body)
 
-          log("#send_to_dynatrace status #{res.status}")
+          log.debug("#send_to_dynatrace response #{res}")
           return if res.is_a?(Net::HTTPSuccess)
 
           raise failure_message res
