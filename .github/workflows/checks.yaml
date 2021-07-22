@@ -7,6 +7,7 @@ on:
   pull_request:
 
 env:
+  # 3.0 in quotes for https://github.com/actions/runner/issues/849
   SUPPORTED_VERSIONS: '["3.0", 2.7, 2.6, 2.5]'
 
 jobs:
