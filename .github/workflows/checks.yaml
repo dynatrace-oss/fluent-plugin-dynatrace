@@ -1,0 +1,73 @@
+name: Checks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  SUPPORTED_VERSIONS: '["2.7.x", "2.6.x", "2.5.x"]'
+
+jobs:
+  supported-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+    - id: set-matrix
+      run: |
+        echo "::set-output name=matrix::${{env.SUPPORTED_VERSIONS}}"
+  unit-test:
+    needs: supported-versions
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby-version: ${{fromJson(needs.supported-versions.outputs.matrix)}}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: actions/setup-ruby@v2
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+      - run: |
+          gem install bundler
+          bundle install
+      - run: rake test
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: actions/setup-ruby@v2
+        with:
+          ruby-version: '2.7'
+      - run: |
+          gem install bundler
+          bundle install
+      - run: rake rubocop
+  integration-test:
+    needs: supported-versions
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby-version: ${{fromJson(needs.supported-versions.outputs.matrix)}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: actions/setup-ruby@v2
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+      - run: |
+          gem install bundler
+          bundle install
+      - run: rake test:integration:fluent
+  all-passed:
+    needs: [unit-test,lint,integration-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: All checks passed
+        run: 'true'
