@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  SUPPORTED_VERSIONS: '["2.7.x", "2.6.x", "2.5.x"]'
+  SUPPORTED_VERSIONS: '[2.7, 2.6, 2.5]'
 
 jobs:
   supported-versions:
@@ -43,7 +43,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7'
+          ruby-version: 2.7
       - run: |
           gem install bundler
           bundle install
