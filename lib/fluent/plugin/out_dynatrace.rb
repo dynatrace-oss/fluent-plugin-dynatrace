@@ -82,23 +82,23 @@ module Fluent
         records = 0
         # es = inject_values_to_event_stream(tag, es)
         es.each do |_time, record|
-          records++
+          records += 1
           log.on_trace { log.trace("#process Processing record #{records}") }
-          send_to_dynatrace(record)
+          synchronized_send_records(record)
         end
         log.on_trace { log.trace("#process Processed #{records} records") }
       end
 
       def write(chunk)
         log.on_trace { log.trace('#write') }
-        body = []
+        records = []
         chunk.each do |_time, record|
-          # body.push(inject_values_to_record(chunk.metadata.tag, time, record))
-          body.push(record)
+          # records.push(inject_values_to_record(chunk.metadata.tag, time, record))
+          records.push(record)
         end
 
-        log.on_trace { log.trace("#write sent #{body.length} records") }
-        send_to_dynatrace(body) unless body.empty?
+        log.on_trace { log.trace("#write sent #{records.length} records") }
+        synchronized_send_records(records) unless records.empty?
       end
 
       #############################################
@@ -117,7 +117,7 @@ module Fluent
         "fluent-plugin-dynatrace v#{DynatraceOutputConstants.version}"
       end
 
-      def prepare_request(uri)
+      def prepare_request
         log.on_trace { log.trace('#prepare_request') }
         req = Net::HTTP::Post.new(uri, { 'User-Agent' => user_agent })
         req['Content-Type'] = 'application/json; charset=utf-8'
@@ -126,21 +126,37 @@ module Fluent
         req
       end
 
-      def send_to_dynatrace(payload)
-        log.on_trace { log.trace("#send_to_dynatrace") }
-        body = "#{payload.to_json.chomp}\n"
-        log.on_trace { log.trace("#send_to_dynatrace serialized body length #{body.length}") }
+      def synchronized_send_records(records)
+        log.on_trace { log.trace('#synchronized_send_records') }
         HTTP_REQUEST_LOCK.synchronize do
-          agent.start unless agent.started?
-
-          req = prepare_request(@uri)
-          res = @agent.request(req, body)
-
-          log.on_trace { log.trace("#send_to_dynatrace response #{res}") }
-          return if res.is_a?(Net::HTTPSuccess)
-
-          raise failure_message res
+          send_records(records)
         end
+      end
+
+      def send_records(records)
+        log.on_trace { log.trace('#send_records') }
+
+        agent.start unless agent.started?
+
+        res = request(serialize(records))
+
+        return if res.is_a?(Net::HTTPSuccess)
+
+        raise failure_message res
+      end
+
+      def serialize(records)
+        log.on_trace { log.trace('#serialize') }
+        body = "#{records.to_json.chomp}\n"
+        log.on_trace { log.trace("#serialize body length #{body.length}") }
+        body
+      end
+
+      def request(body)
+        log.on_trace { log.trace('#request') }
+        res = @agent.request(prepare_request, body)
+        log.on_trace { log.trace("#request response #{res}") }
+        res
       end
 
       def failure_message(res)
