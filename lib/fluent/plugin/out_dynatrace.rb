@@ -78,25 +78,26 @@ module Fluent
       #############################################
 
       def process(_tag, es)
-        log.debug('#process')
+        log.on_trace { log.trace('#process') }
         records = 0
         # es = inject_values_to_event_stream(tag, es)
         es.each do |_time, record|
           records++
+          log.on_trace { log.trace("#process Processing record #{records}") }
           send_to_dynatrace(record)
         end
-        log.debug("#process sent #{records} records")
+        log.on_trace { log.trace("#process Processed #{records} records") }
       end
 
       def write(chunk)
-        log.debug('#write')
+        log.on_trace { log.trace('#write') }
         body = []
         chunk.each do |_time, record|
           # body.push(inject_values_to_record(chunk.metadata.tag, time, record))
           body.push(record)
         end
 
-        log.debug("#write sent #{body.length} records")
+        log.on_trace { log.trace("#write sent #{body.length} records") }
         send_to_dynatrace(body) unless body.empty?
       end
 
@@ -117,6 +118,7 @@ module Fluent
       end
 
       def prepare_request(uri)
+        log.on_trace { log.trace('#prepare_request') }
         req = Net::HTTP::Post.new(uri, { 'User-Agent' => user_agent })
         req['Content-Type'] = 'application/json; charset=utf-8'
         req['Authorization'] = "Api-Token #{@api_token}"
@@ -125,15 +127,16 @@ module Fluent
       end
 
       def send_to_dynatrace(payload)
+        log.on_trace { log.trace("#send_to_dynatrace") }
         body = "#{payload.to_json.chomp}\n"
-        log.debug("#send_to_dynatrace")
+        log.on_trace { log.trace("#send_to_dynatrace serialized body length #{body.length}") }
         HTTP_REQUEST_LOCK.synchronize do
           agent.start unless agent.started?
 
           req = prepare_request(@uri)
           res = @agent.request(req, body)
 
-          log.debug("#send_to_dynatrace response #{res}")
+          log.on_trace { log.trace("#send_to_dynatrace response #{res}") }
           return if res.is_a?(Net::HTTPSuccess)
 
           raise failure_message res
