@@ -138,11 +138,11 @@ module Fluent
 
         agent.start unless agent.started?
 
-        res = request(serialize(records))
+        response = send_request(serialize(records))
 
-        return if res.is_a?(Net::HTTPSuccess)
+        return if response.is_a?(Net::HTTPSuccess)
 
-        raise failure_message res
+        raise failure_message response
       end
 
       def serialize(records)
@@ -152,11 +152,11 @@ module Fluent
         body
       end
 
-      def request(body)
-        log.on_trace { log.trace('#request') }
-        res = @agent.request(prepare_request, body)
-        log.on_trace { log.trace("#request response #{res}") }
-        res
+      def send_request(body)
+        log.on_trace { log.trace('#send_request') }
+        response = @agent.request(prepare_request, body)
+        log.on_trace { log.trace("#send_request response #{response}") }
+        response
       end
 
       def failure_message(res)
