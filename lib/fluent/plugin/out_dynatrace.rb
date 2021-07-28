@@ -78,20 +78,27 @@ module Fluent
       #############################################
 
       def process(_tag, es)
+        log.on_trace { log.trace('#process') }
+        records = 0
         # es = inject_values_to_event_stream(tag, es)
         es.each do |_time, record|
-          send_to_dynatrace("#{record.to_json.chomp}\n")
+          records += 1
+          log.on_trace { log.trace("#process Processing record #{records}") }
+          synchronized_send_records(record)
         end
+        log.on_trace { log.trace("#process Processed #{records} records") }
       end
 
       def write(chunk)
-        body = []
+        log.on_trace { log.trace('#write') }
+        records = []
         chunk.each do |_time, record|
-          # body.push(inject_values_to_record(chunk.metadata.tag, time, record))
-          body.push(record)
+          # records.push(inject_values_to_record(chunk.metadata.tag, time, record))
+          records.push(record)
         end
 
-        send_to_dynatrace("#{body.to_json.chomp}\n") unless body.empty?
+        log.on_trace { log.trace("#write sent #{records.length} records") }
+        synchronized_send_records(records) unless records.empty?
       end
 
       #############################################
@@ -110,7 +117,8 @@ module Fluent
         "fluent-plugin-dynatrace v#{DynatraceOutputConstants.version}"
       end
 
-      def prepare_request(uri)
+      def prepare_request
+        log.on_trace { log.trace('#prepare_request') }
         req = Net::HTTP::Post.new(uri, { 'User-Agent' => user_agent })
         req['Content-Type'] = 'application/json; charset=utf-8'
         req['Authorization'] = "Api-Token #{@api_token}"
@@ -118,17 +126,37 @@ module Fluent
         req
       end
 
-      def send_to_dynatrace(body)
+      def synchronized_send_records(records)
+        log.on_trace { log.trace('#synchronized_send_records') }
         HTTP_REQUEST_LOCK.synchronize do
-          agent.start unless agent.started?
-
-          req = prepare_request(@uri)
-          res = @agent.request(req, body)
-
-          return if res.is_a?(Net::HTTPSuccess)
-
-          raise failure_message res
+          send_records(records)
         end
+      end
+
+      def send_records(records)
+        log.on_trace { log.trace('#send_records') }
+
+        agent.start unless agent.started?
+
+        response = send_request(serialize(records))
+
+        return if response.is_a?(Net::HTTPSuccess)
+
+        raise failure_message response
+      end
+
+      def serialize(records)
+        log.on_trace { log.trace('#serialize') }
+        body = "#{records.to_json.chomp}\n"
+        log.on_trace { log.trace("#serialize body length #{body.length}") }
+        body
+      end
+
+      def send_request(body)
+        log.on_trace { log.trace('#send_request') }
+        response = @agent.request(prepare_request, body)
+        log.on_trace { log.trace("#send_request response #{response}") }
+        response
       end
 
       def failure_message(res)
