@@ -42,6 +42,10 @@ data:
         @type null
     </match>
 
+    <match kubernetes.var.log.containers.**fluent**.log>
+        @type null
+    </match>
+
     <filter kubernetes.**>
         @type kubernetes_metadata
     </filter>
@@ -50,19 +54,18 @@ data:
         @type record_transformer
         enable_ruby true
         <record>
-            k8s.pod.labels ${record["kubernetes"]["labels"]}
-            k8s.namespace.uid ${record["kubernetes"]["namespace_id"]}
             status ${ record.dig(:log, :severity) || record.dig(:log, :level) || (record["log"] =~ /\W?\berror\b\W?/i ? "ERROR" : (record["log"] =~ /\W?\bwarn\b\W?/i ? "WARN" : (record["log"] =~ /\W?\bdebug\b\W?/i ? "DEBUG" : (record["log"] =~ /\W?\binfo\b\W?/i ? "INFO" : "NONE")))) }
             content ${record["log"]}
             container.name ${record.dig("kubernetes","container_name")}
             container.image.name ${record.dig("kubernetes","container_image").split(':')[0]}
             container.image.tag ${record.dig("kubernetes","container_image").split(':')[1]}
             dt.kubernetes.node.name ${record.dig("kubernetes","host")}
+            dt.kubernetes.cluster.id "#{ENV['CLUSTER_ID']}"
+            k8s.pod.labels ${record["kubernetes"]["labels"]}
+            k8s.namespace.uid ${record["kubernetes"]["namespace_id"]}
             k8s.namespace.name ${record.dig("kubernetes","namespace_name")}
             k8s.pod.name ${record.dig("kubernetes","pod_name")}
             k8s.pod.uid ${record.dig("kubernetes","pod_id")}
-            dt.kubernetes.node.system_uuid ${File.read("/sys/devices/virtual/dmi/id/product_uuid").strip}
-            dt.kubernetes.cluster.id "#{ENV['CLUSTER_ID']}"
         </record>
         remove_keys log, stream, docker, kubernetes
     </filter>
@@ -77,10 +80,6 @@ data:
         retry_max_times 3
       </buffer>
     </match>
-
-    #<match kubernetes.**>
-    #    @type stdout
-    #</match>
 
     <system>
         log_level debug
