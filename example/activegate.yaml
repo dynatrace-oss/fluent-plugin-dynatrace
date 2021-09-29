@@ -71,7 +71,7 @@ spec:
               name: fluentd-configuration
               key: CLUSTER_ID
         args:
-        - --enable=log_analytics_collector
+        - --enable=kubernetes_monitoring,log_analytics_collector
         livenessProbe:
           failureThreshold: 2
           httpGet:
