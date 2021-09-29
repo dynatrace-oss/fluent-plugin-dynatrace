@@ -71,7 +71,7 @@ spec:
               name: fluentd-configuration
               key: CLUSTER_ID
         args:
-        - --enable=kubernetes_monitoring,log_analytics_collector
+        - --enable=log_analytics_collector
         livenessProbe:
           failureThreshold: 2
           httpGet:
@@ -100,6 +100,6 @@ spec:
             cpu: 150m
             memory: 250M
       imagePullSecrets:
-      - name: dynatrace-docker-registry
+      - name: tenant-docker-registry
   updateStrategy:
     type: RollingUpdate

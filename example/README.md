@@ -27,7 +27,7 @@ Build the FluentD docker image provided in our example and upload it to your rep
    * ${YOUR_ENVIRONMENT_ID} with the ID in your environment URL
    * ${YOUR_PAAS_TOKEN} with the PaaS token you created in Prerequisites
 
-   ``kubectl create secret docker-registry dynatrace-docker-registry --docker-server=${YOUR_ENVIRONMENT_URL} --docker-username=${YOUR_ENVIRONMENT_ID} --docker-password=${YOUR_PAAS_TOKEN} -n dynatrace``
+   ``kubectl create secret docker-registry tenant-docker-registry --docker-server=${YOUR_ENVIRONMENT_URL} --docker-username=${YOUR_ENVIRONMENT_ID} --docker-password=${YOUR_PAAS_TOKEN} -n dynatrace``
 
 4. Edit the file named configmap.yaml, making sure to replace
    * ${YOUR_ENVIRONMENT_ID} with the ID in your environment URL.
