@@ -19,7 +19,7 @@ Build the FluentD docker image provided in our example and upload it to your rep
 
 2. Create a service account and cluster role for accessing the Kubernetes API. 
 
-   ``kubectl apply -f https://www.dynatrace.com/support/help/codefiles/kubernetes/kubernetes-monitoring-service-account.yaml``
+   ``kubectl apply -f service-account.yaml``
 
 3. Create a secret holding the environment URL and login credentials for this registry, making sure to replace.
 

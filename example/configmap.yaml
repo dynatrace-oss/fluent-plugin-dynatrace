@@ -56,10 +56,12 @@ data:
       separator ""
     </filter>
 
+    # Enrich with kubernetes metadata
     <filter kubernetes.**>
       @type kubernetes_metadata
     </filter>
 
+    # Transform metadata to records
     <filter kubernetes.**>
       @type record_transformer
       enable_ruby true
@@ -81,6 +83,7 @@ data:
         remove_keys log, stream, docker, kubernetes
     </filter>
 
+    # Send to dynatrace log ingest
     <match kubernetes.**>
       @type dynatrace
       active_gate_url "#{ENV['AG_INGEST_URL']}"
