@@ -207,5 +207,21 @@ class MyOutputTest < Test::Unit::TestCase
       t1.join
       t2.join
     end
+
+    test 'inject timestamp into message if inject_timestamp is true' do
+      d = create_driver(%(
+        active_gate_url https://example.dynatrace.com/logs
+        api_token       secret
+        inject_timestamp true
+      ))
+
+      t = event_time('2016-06-10 19:46:32 +0900')
+      d.run do
+        d.feed('tag', t, { 'message' => 'this is a test message', 'amount' => 53 })
+      end
+
+      content = d.instance.agent.result.data[0]
+      assert_equal content['@timestamp'], 1_465_555_592_000
+    end
   end
 end
