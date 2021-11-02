@@ -6,3 +6,6 @@ AllCops:
 
 Naming/MethodParameterName:
   Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false

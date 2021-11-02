@@ -39,6 +39,9 @@ module Fluent
       desc 'Disable SSL validation by setting :verify_mode OpenSSL::SSL::VERIFY_NONE'
       config_param :ssl_verify_none, :bool, default: false
 
+      desc 'Inject timestamp into each log message'
+      config_param :inject_timestamp, :bool, default: false
+
       #############################################
 
       config_section :buffer do
@@ -81,9 +84,10 @@ module Fluent
         log.on_trace { log.trace('#process') }
         records = 0
         # es = inject_values_to_event_stream(tag, es)
-        es.each do |_time, record|
+        es.each do |time, record|
           records += 1
           log.on_trace { log.trace("#process Processing record #{records}") }
+          record['@timestamp'] = time * 1000 if @inject_timestamp
           synchronized_send_records(record)
         end
         log.on_trace { log.trace("#process Processed #{records} records") }
@@ -92,8 +96,9 @@ module Fluent
       def write(chunk)
         log.on_trace { log.trace('#write') }
         records = []
-        chunk.each do |_time, record|
+        chunk.each do |time, record|
           # records.push(inject_values_to_record(chunk.metadata.tag, time, record))
+          record['@timestamp'] = time * 1000 if @inject_timestamp
           records.push(record)
         end
 
