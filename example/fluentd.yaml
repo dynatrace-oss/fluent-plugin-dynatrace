@@ -24,7 +24,7 @@ spec:
       initContainers:
       - name: fluentd-permission-fix
         image: busybox
-        command: ["sh","-c","touch /var/log/fluentd.pos; chmod -R 777 /var/log/fluentd.pos; "]
+        command: ["sh","-c","touch /var/log/fluentd.pos; chmod -R 770 /var/log/fluentd.pos; "]
         volumeMounts:
         - name: var-log
           mountPath: /var/log/
@@ -38,12 +38,12 @@ spec:
         - name: CLUSTER_ID
           valueFrom:
             configMapKeyRef:
-              name: fluentd-configuration
+              name: fluentd-ingest-configuration
               key: CLUSTER_ID
         - name: AG_INGEST_URL
           valueFrom:
             configMapKeyRef:
-              name: fluentd-configuration
+              name: fluentd-ingest-configuration
               key: AG_INGEST_URL
         - name: LOG_INGEST_TOKEN
           valueFrom:
@@ -54,11 +54,11 @@ spec:
           limits:
             cpu: 200m
             memory: 400Mi
-            ephemeral-storage: 10Gi
+            ephemeral-storage: 1Gi
           requests:
             cpu: 100m
             memory: 200Mi
-            ephemeral-storage: 10Gi
+            ephemeral-storage: 1Gi
         volumeMounts:
         - name: var-log
           mountPath: /var/log/
@@ -68,7 +68,7 @@ spec:
           readOnly: true
         - name: var-log-pos
           mountPath: /var/log/fluentd.pos
-        - name: fluentd-configuration
+        - name: fluentd-ingest-configuration
           mountPath: /fluentd/etc/fluent.conf
           subPath: fluent.conf
       terminationGracePeriodSeconds: 30
@@ -83,9 +83,9 @@ spec:
         hostPath:
           path: /var/log/fluentd.pos
           type: FileOrCreate
-      - name: fluentd-configuration
+      - name: fluentd-ingest-configuration
         configMap:
-          name: fluentd-configuration
+          name: fluentd-ingest-configuration
           items:
           - key: fluent.conf
             path: fluent.conf

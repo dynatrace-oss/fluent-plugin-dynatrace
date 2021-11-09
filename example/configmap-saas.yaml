@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: fluentd-configuration
+  name: fluentd-ingest-configuration
   namespace: dynatrace
 data:
   CLUSTER_ID: "${YOUR_CLUSTER_ID}"
-  AG_INGEST_URL: "https://fluentd-activegate:9999/e/${YOUR_ENVIRONMENT_ID}/api/v2/logs/ingest"
+  AG_INGEST_URL: "https://${YOUR_ENVIRONMENT_ID}.live.dynatrace.com/api/v2/logs/ingest"
   fluent.conf: |
     <label @FLUENT_LOG>
         <match fluent.**>

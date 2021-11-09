@@ -13,6 +13,18 @@ spec:
     k8s-app: fluentd-logging
   type: ClusterIP
 ---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  namespace: dynatrace
+  name: activegate-log-queue
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -56,6 +68,13 @@ spec:
                 operator: In
                 values:
                 - linux
+      initContainers:
+      - name: activegate-permission-fix
+        image: busybox
+        command: ["sh","-c","chmod -R 770 /media/datastore/security-gateway/log-ingest-queue/; "]
+        volumeMounts:
+        - name: activegate-log-queue
+          mountPath: /media/datastore/security-gateway/log-ingest-queue/
       containers:
       - name: activegate
         image: ${YOUR_ENVIRONMENT_URL}/linux/activegate
@@ -68,10 +87,10 @@ spec:
         - name: DT_ID_SEED_K8S_CLUSTER_ID
           valueFrom:
             configMapKeyRef:
-              name: fluentd-configuration
+              name: fluentd-ingest-configuration
               key: CLUSTER_ID
         args:
-        - --enable=kubernetes_monitoring,log_analytics_collector
+        - --enable=log_analytics_collector
         livenessProbe:
           failureThreshold: 2
           httpGet:
@@ -99,6 +118,22 @@ spec:
           requests:
             cpu: 150m
             memory: 250M
+        volumeMounts:
+        - name: activegate-log-queue
+          mountPath:  /media/datastore/security-gateway/log-ingest-queue/
+        - name: activegate-configuration
+          mountPath: /var/lib/dynatrace/gateway/config_template/custom.properties
+          subPath: custom.properties
+      volumes:
+        - name: activegate-log-queue
+          persistentVolumeClaim:
+            claimName: activegate-log-queue
+        - name: activegate-configuration
+          configMap:
+            name: fluentd-ingest-configuration
+            items:
+            - key: custom.properties
+              path: custom.properties
       imagePullSecrets:
       - name: tenant-docker-registry
   updateStrategy:
