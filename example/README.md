@@ -67,9 +67,9 @@ Build the FluentD docker image provided in our example and upload it to your rep
 
 ## Deploy FluentD 
 
-1. Create a secret with your API Token. Make sure to replace ${YOUR_AG_INGEST_TOKEN} with the API Token that has log ingest permissions.
+1. Create a secret with your API Token. Make sure to replace ${YOUR_API_TOKEN} with the API Token that has log ingest permissions.
 
-   ``kubectl create secret generic tokens --from-literal="log-ingest=${YOUR_AG_INGEST_TOKEN}" -n dynatrace``
+   ``kubectl create secret generic tokens --from-literal="log-ingest=${YOUR_API_TOKEN}" -n dynatrace``
 
 2. Replace ${YOUR_FLUENTD_IMAGE} with the fluentd image you built 
 

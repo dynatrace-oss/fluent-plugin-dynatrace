@@ -40,11 +40,11 @@ spec:
             configMapKeyRef:
               name: fluentd-ingest-configuration
               key: CLUSTER_ID
-        - name: AG_INGEST_URL
+        - name: INGEST_ENDPOINT
           valueFrom:
             configMapKeyRef:
               name: fluentd-ingest-configuration
-              key: AG_INGEST_URL
+              key: INGEST_ENDPOINT
         - name: LOG_INGEST_TOKEN
           valueFrom:
             secretKeyRef:

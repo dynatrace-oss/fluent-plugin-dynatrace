@@ -5,7 +5,7 @@ metadata:
   namespace: dynatrace
 data:
   CLUSTER_ID: "${YOUR_CLUSTER_ID}"
-  AG_INGEST_URL: "https://${YOUR_ENVIRONMENT_ID}.live.dynatrace.com/api/v2/logs/ingest"
+  INGEST_ENDPOINT: "https://${YOUR_ENVIRONMENT_ID}.live.dynatrace.com/api/v2/logs/ingest"
   fluent.conf: |
     <label @FLUENT_LOG>
         <match fluent.**>
