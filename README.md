@@ -37,6 +37,7 @@ Below is an example configuration which sends all logs with tags starting with `
   active_gate_url    https://{your-environment-activegate}:8021/e/{your-tenant}/api/v2/logs/ingest
   api_token          api_token
   ssl_verify_none    false
+  inject_timestamp   false
 </match>
 ```
 
@@ -73,6 +74,13 @@ This is the [Dynatrace API token](https://www.dynatrace.com/support/help/dynatra
 - `default: false`
 
 It is recommended to leave this optional configuration set to `false` unless absolutely required. Setting `ssl_verify_none` to `true` causes the output plugin to skip certificate verification when sending log ingest requests to SSL and TLS protected HTTPS endpoints. This option may be required if you are using a self-signed certificate, an expired certificate, or a certificate which was generated for a different domain than the one in use.
+
+### `inject_timestamp`
+
+- `optional`
+- `default: false`
+
+If set to true, the timestamp of the log message will be injected into the body of the message in a format readable by Dynatrace.
 
 ## Example
 
