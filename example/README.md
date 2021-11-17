@@ -17,7 +17,7 @@ Only needed in combination with a Dynatrace ActiveGate:
 - A [PaaS Token](https://www.dynatrace.com/support/help/get-started/access-tokens/)
 - Available persistent storage in your Kubernetes cluster
 
-## Decide on a log ingest
+## Decide on a log ingest endpoint
 
 You have two options when choosing the endpoint fluentd sends your log to.
 This is either an ActiveGate, which might already exist in your environment or a pre-existing log ingest on your SaaS Dynatrace environment.
