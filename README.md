@@ -82,6 +82,10 @@ It is recommended to leave this optional configuration set to `false` unless abs
 
 If set to true, the timestamp of the log message will be injected into the body of the message in a format readable by Dynatrace.
 
+## Example
+
+An full example demonstrating how to set up Fluentd on Kubernetes and export logs to Dynatrace can be found in the [example folder](./example).
+
 ## Development
 
 `fluent-plugin-dynatrace` supports Ruby versions `>= 2.4.0` but it is recommended that at least `2.7.2` is used for development. Ruby versions can be managed with tools like [chruby](https://github.com/postmodern/chruby) or [rbenv](https://github.com/rbenv/rbenv).

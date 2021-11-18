@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  namespace: dynatrace
+  labels:
+    k8s-app: fluentd-logging
+    version: v1
+spec:
+  selector:
+    matchLabels:
+      k8s-app: fluentd-logging
+      version: v1
+  template:
+    metadata:
+      labels:
+        k8s-app: fluentd-logging
+        version: v1
+    spec:
+      serviceAccountName: dynatrace-monitoring
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      initContainers:
+      - name: fluentd-permission-fix
+        image: busybox
+        command: ["sh","-c","touch /var/log/fluentd.pos; chmod -R 770 /var/log/fluentd.pos; "]
+        volumeMounts:
+        - name: var-log
+          mountPath: /var/log/
+      containers:
+      - name: fluentd
+        image: ${YOUR_FLUENTD_IMAGE}
+        imagePullPolicy: Always
+        env:
+        - name: FLUENT_UID
+          value: "0"
+        - name: CLUSTER_ID
+          valueFrom:
+            configMapKeyRef:
+              name: fluentd-ingest-configuration
+              key: CLUSTER_ID
+        - name: INGEST_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: fluentd-ingest-configuration
+              key: INGEST_ENDPOINT
+        - name: LOG_INGEST_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: tokens
+              key: log-ingest
+        resources:
+          limits:
+            cpu: 200m
+            memory: 400Mi
+            ephemeral-storage: 1Gi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+            ephemeral-storage: 1Gi
+        volumeMounts:
+        - name: var-log
+          mountPath: /var/log/
+          readOnly: true
+        - name: var-lib
+          mountPath: /var/lib
+          readOnly: true
+        - name: var-log-pos
+          mountPath: /var/log/fluentd.pos
+        - name: fluentd-ingest-configuration
+          mountPath: /fluentd/etc/fluent.conf
+          subPath: fluent.conf
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: var-log
+        hostPath:
+          path: /var/log/
+      - name: var-lib
+        hostPath:
+          path: /var/lib
+      - name: var-log-pos
+        hostPath:
+          path: /var/log/fluentd.pos
+          type: FileOrCreate
+      - name: fluentd-ingest-configuration
+        configMap:
+          name: fluentd-ingest-configuration
+          items:
+          - key: fluent.conf
+            path: fluent.conf
