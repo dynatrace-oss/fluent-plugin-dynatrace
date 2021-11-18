@@ -26,14 +26,14 @@ This is either an ActiveGate, which might already exist in your environment or a
 
 1. Create a secret holding the environment URL and login credentials for this registry, making sure to replace
 
-   - `${YOUR_ENVIRONMENT_URL}` with your environment URL without 'https' (e.g., `env123456.live.dynatrace.com`)
-   - `${YOUR_ENVIRONMENT_ID}` with the ID of your environment (e.g., `env123456`)
+   - `${YOUR_ENVIRONMENT_URL}` with your Dynatrace environment URL without 'https' (e.g., `env123456.live.dynatrace.com`)
+   - `${YOUR_ENVIRONMENT_ID}` with the ID of your Dynatrace environment (e.g., `env123456`)
    - `${YOUR_PAAS_TOKEN}` with the PaaS token you created as described in the Prerequisites
 
    ``kubectl create secret docker-registry tenant-docker-registry --docker-server=${YOUR_ENVIRONMENT_URL} --docker-username=${YOUR_ENVIRONMENT_ID} --docker-password=${YOUR_PAAS_TOKEN} -n dynatrace``
 
 2. Edit the file named `configmap-activegate.yaml`, making sure to replace
-   - `${YOUR_ENVIRONMENT_ID}` with the ID of your environment (e.g., `env123456`)
+   - `${YOUR_ENVIRONMENT_ID}` with the ID of your Dynatrace environment (e.g., `env123456`)
    - `${YOUR_CLUSTER_ID}` with your Kubernetes Cluster ID which can be retrieved using this command:
 
      ``kubectl get namespace kube-system  -o jsonpath='{.metadata.uid}'``
@@ -41,7 +41,7 @@ This is either an ActiveGate, which might already exist in your environment or a
    - your `fluent.conf` file with a configuration suiting your environment. Our example is using the kubernetes-metadata-filter to enrich ingested log lines with information about its underlying kubernetes infrastructure. **Depending on the applications on your cluster you might need to manually modify the `fluent.conf` file.**
 
 3. Edit the file named `activegate.yaml`, making sure to replace
-   - `${YOUR_ENVIRONMENT_URL}` with your environment URL (without 'https' (e.g., `env123456.live.dynatrace.com`)
+   - `${YOUR_ENVIRONMENT_URL}` with your Dynatrace environment URL (without 'https' (e.g., `env123456.live.dynatrace.com`)
 
 4. That same `activegate.yaml` also deploys a persistent volume to queue log entries that were not pushed to Dynatrace yet. Make sure you have a persistent volume or storage class readily available.
 
@@ -54,7 +54,7 @@ This is either an ActiveGate, which might already exist in your environment or a
 Not only your ActiveGate presents an endpoint, but also your Dynatrace environment is able to ingest logs directly.
 
 1. Edit the file named `configmap-saas.yaml`, making sure to replace
-   - `${YOUR_ENVIRONMENT_ID}` with the ID of your environment (e.g., `env123456`)
+   - `${YOUR_ENVIRONMENT_ID}` with the ID of your Dynatrace environment (e.g., `env123456`)
    - `${YOUR_CLUSTER_ID}` with your Kubernetes Cluster ID which can be retrieved using this command:
 
      ``kubectl get namespace kube-system  -o jsonpath='{.metadata.uid}'``
