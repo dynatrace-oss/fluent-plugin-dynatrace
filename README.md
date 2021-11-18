@@ -84,7 +84,7 @@ If set to true, the timestamp of the log message will be injected into the body 
 
 ## Example
 
-An example of the necessary components used for Kubernetes is documented [here](https://github.com/dynatrace-oss/fluent-plugin-dynatrace/example).
+An full example demonstrating how to set up Fluentd on Kubernetes and export logs to Dynatrace can be found in the [example folder](./example).
 
 ## Development
 
