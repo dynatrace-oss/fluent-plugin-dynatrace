@@ -34,7 +34,7 @@ This is either an ActiveGate, which might already exist in your environment or a
 
 2. Edit the file named `configmap-activegate.yaml`, making sure to replace
    - `${YOUR_ENVIRONMENT_ID}` with the ID of your environment (e.g., `env123456`)
-   - `${YOUR_CLUSTER_ID}` with your cluster id.
+   - `${YOUR_CLUSTER_ID}` with your Kubernetes Cluster ID which can be retrieved using this command:
 
      ``kubectl get namespace kube-system  -o jsonpath='{.metadata.uid}'``
 
@@ -55,7 +55,7 @@ Not only your ActiveGate presents an endpoint, but also your Dynatrace environme
 
 1. Edit the file named `configmap-saas.yaml`, making sure to replace
    - `${YOUR_ENVIRONMENT_ID}` with the ID of your environment (e.g., `env123456`)
-   - `${YOUR_CLUSTER_ID}` with your cluster id.
+   - `${YOUR_CLUSTER_ID}` with your Kubernetes Cluster ID which can be retrieved using this command:
 
      ``kubectl get namespace kube-system  -o jsonpath='{.metadata.uid}'``
 
