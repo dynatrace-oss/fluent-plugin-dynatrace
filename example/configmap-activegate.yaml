@@ -90,7 +90,7 @@ data:
     # Send to dynatrace log ingest
     <match kubernetes.**>
       @type dynatrace
-      active_gate_url "#{ENV['AG_INGEST_URL']}"
+      active_gate_url "#{ENV['INGEST_ENDPOINT']}"
       api_token "#{ENV['LOG_INGEST_TOKEN']}"
       ssl_verify_none true
       <buffer>
