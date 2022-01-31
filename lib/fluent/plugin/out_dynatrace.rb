@@ -64,7 +64,11 @@ module Fluent
         compat_parameters_convert(conf, :inject)
         super
 
+        raise Fluent::ConfigError, "active_gate_url has not been set" if @active_gate_url == ''
+
         @uri = URI.parse(@active_gate_url)
+        raise Fluent::ConfigError, "active_gate_url scheme must be http or https" unless %w[http https].include?(@uri.scheme)
+
         @agent = Net::HTTP.new(@uri.host, @uri.port)
 
         return unless uri.scheme == 'https'
