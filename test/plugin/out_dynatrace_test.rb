@@ -160,7 +160,7 @@ class MyOutputTest < Test::Unit::TestCase
         active_gate_url http://[::1]//logs
         api_token       secret
       ))
-      assert_equal "http://[::1]//logs", d.instance.active_gate_url
+      assert_equal 'http://[::1]//logs', d.instance.active_gate_url
       assert_equal 'secret', d.instance.api_token
     end
 
