@@ -67,8 +67,6 @@ module Fluent
         raise Fluent::ConfigError, 'api_token has not been set' if @api_token.empty?
 
         @uri = parse_uri(@active_gate_url)
-        raise Fluent::ConfigError, 'active_gate_url scheme must be http or https' unless
-          %w[http https].include?(@uri.scheme)
 
         @agent = Net::HTTP.new(@uri.host, @uri.port)
 
@@ -185,7 +183,12 @@ module Fluent
 
       def parse_uri(uri_string)
         raise Fluent::ConfigError, 'active_gate_url has not been set' if uri_string.empty?
-        @uri = URI.parse(@active_gate_url)
+
+        uri = URI.parse(uri_string)
+        raise Fluent::ConfigError, 'active_gate_url scheme must be http or https' unless
+          %w[http https].include?(uri.scheme)
+
+        uri
       end
     end
   end
