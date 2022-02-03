@@ -64,7 +64,8 @@ module Fluent
         compat_parameters_convert(conf, :inject)
         super
 
-        raise Fluent::ConfigError, 'active_gate_url has not been set' if @active_gate_url == ''
+        raise Fluent::ConfigError, 'active_gate_url has not been set' if @active_gate_url.empty?
+        raise Fluent::ConfigError, 'api_token has not been set' if @api_token.empty?
 
         @uri = URI.parse(@active_gate_url)
         raise Fluent::ConfigError, 'active_gate_url scheme must be http or https' unless

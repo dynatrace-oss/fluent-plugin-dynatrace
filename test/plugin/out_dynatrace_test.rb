@@ -155,6 +155,15 @@ class MyOutputTest < Test::Unit::TestCase
       end
     end
 
+    test 'with IPv6 as host should not throw' do
+      d = create_driver(%(
+        active_gate_url http://[::1]//logs
+        api_token       secret
+      ))
+      assert_equal "http://[::1]//logs", d.instance.active_gate_url
+      assert_equal 'secret', d.instance.api_token
+    end
+
     test 'should throw if active_gate_url scheme is not http or https' do
       assert_raises Fluent::ConfigError do
         create_driver(%(
@@ -181,6 +190,15 @@ class MyOutputTest < Test::Unit::TestCase
         create_driver(%(
         active_gate_url ssh://example.dynatrace.com/logs
         api_token       secret
+      ))
+      end
+    end
+
+    test 'should throw if api_token is not set' do
+      assert_raises Fluent::ConfigError do
+        create_driver(%(
+        active_gate_url https://example.dynatrace.com/logs
+        api_token
       ))
       end
     end
