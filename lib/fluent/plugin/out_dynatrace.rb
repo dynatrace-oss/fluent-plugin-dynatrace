@@ -64,9 +64,9 @@ module Fluent
         compat_parameters_convert(conf, :inject)
         super
 
-        raise Fluent::ConfigError, 'api_token has not been set' if @api_token.empty?
+        raise Fluent::ConfigError, 'api_token is empty' if @api_token.empty?
 
-        @uri = parse_uri(@active_gate_url)
+        @uri = parse_and_validate_uri(@active_gate_url)
 
         @agent = Net::HTTP.new(@uri.host, @uri.port)
 
@@ -181,8 +181,8 @@ module Fluent
 
       private
 
-      def parse_uri(uri_string)
-        raise Fluent::ConfigError, 'active_gate_url has not been set' if uri_string.empty?
+      def parse_and_validate_uri(uri_string)
+        raise Fluent::ConfigError, 'active_gate_url is empty' if uri_string.empty?
 
         uri = URI.parse(uri_string)
         raise Fluent::ConfigError, 'active_gate_url scheme must be http or https' unless
