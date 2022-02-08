@@ -188,6 +188,8 @@ module Fluent
         raise Fluent::ConfigError, 'active_gate_url scheme must be http or https' unless
           %w[http https].include?(uri.scheme)
 
+        raise Fluent::ConfigError, 'active_gate_url must include an authority' if uri.host.nil?
+
         uri
       end
     end

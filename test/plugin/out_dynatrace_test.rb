@@ -192,6 +192,13 @@ class MyOutputTest < Test::Unit::TestCase
         api_token       secret
       ))
       end
+
+      assert_raises Fluent::ConfigError do
+        create_driver(%(
+        active_gate_url http:path/to/logs
+        api_token       secret
+      ))
+      end
     end
 
     test 'should throw if api_token is not set' do
