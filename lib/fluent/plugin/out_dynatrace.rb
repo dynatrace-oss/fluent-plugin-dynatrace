@@ -64,7 +64,10 @@ module Fluent
         compat_parameters_convert(conf, :inject)
         super
 
-        @uri = URI.parse(@active_gate_url)
+        raise Fluent::ConfigError, 'api_token is empty' if @api_token.empty?
+
+        @uri = parse_and_validate_uri(@active_gate_url)
+
         @agent = Net::HTTP.new(@uri.host, @uri.port)
 
         return unless uri.scheme == 'https'
@@ -172,6 +175,22 @@ module Fluent
                       end
 
         "failed to request #{uri} (#{res_summary})"
+      end
+
+      #############################################
+
+      private
+
+      def parse_and_validate_uri(uri_string)
+        raise Fluent::ConfigError, 'active_gate_url is empty' if uri_string.empty?
+
+        uri = URI.parse(uri_string)
+        raise Fluent::ConfigError, 'active_gate_url scheme must be http or https' unless
+          %w[http https].include?(uri.scheme)
+
+        raise Fluent::ConfigError, 'active_gate_url must include an authority' if uri.host.nil?
+
+        uri
       end
     end
   end

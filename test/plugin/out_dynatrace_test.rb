@@ -145,6 +145,70 @@ class MyOutputTest < Test::Unit::TestCase
       assert_equal true, d.instance.agent.original_agent.use_ssl?
       assert_equal OpenSSL::SSL::VERIFY_NONE, d.instance.agent.original_agent.verify_mode
     end
+
+    test 'should throw if active_gate_url is not set' do
+      assert_raises Fluent::ConfigError do
+        create_driver(%(
+        active_gate_url
+        api_token       secret
+      ))
+      end
+    end
+
+    test 'with IPv6 as host should not throw' do
+      d = create_driver(%(
+        active_gate_url http://[::1]//logs
+        api_token       secret
+      ))
+      assert_equal 'http://[::1]//logs', d.instance.active_gate_url
+      assert_equal 'secret', d.instance.api_token
+    end
+
+    test 'should throw if active_gate_url scheme is not http or https' do
+      assert_raises Fluent::ConfigError do
+        create_driver(%(
+        active_gate_url ./relative/path
+        api_token       secret
+      ))
+      end
+
+      assert_raises Fluent::ConfigError do
+        create_driver(%(
+        active_gate_url example.dynatrace.com/logs
+        api_token       secret
+      ))
+      end
+
+      assert_raises Fluent::ConfigError do
+        create_driver(%(
+        active_gate_url example
+        api_token       secret
+      ))
+      end
+
+      assert_raises Fluent::ConfigError do
+        create_driver(%(
+        active_gate_url ssh://example.dynatrace.com/logs
+        api_token       secret
+      ))
+      end
+
+      assert_raises Fluent::ConfigError do
+        create_driver(%(
+        active_gate_url http:path/to/logs
+        api_token       secret
+      ))
+      end
+    end
+
+    test 'should throw if api_token is not set' do
+      assert_raises Fluent::ConfigError do
+        create_driver(%(
+        active_gate_url https://example.dynatrace.com/logs
+        api_token
+      ))
+      end
+    end
   end
 
   sub_test_case 'tests for #write' do
