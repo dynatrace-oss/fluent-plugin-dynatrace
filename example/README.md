@@ -80,3 +80,17 @@ Build the FluentD docker image provided in our example and upload it to your rep
 3. Deploy `fluentd.yaml`
 
    ``kubectl apply -f fluentd.yaml``
+
+## Sending logs to different Dynatrace environments
+
+With the introduction of Cloud Native Full Stack injection [example](https://github.com/Dynatrace/dynatrace-operator/blob/master/config/samples/cloudNativeFullStack.yaml) it is possible to send metrics and traces to more than one Dynatrace environment. The same thing can be done for logs using fluentd. The following example serves as a potential reference implementation. Results may vary.
+
+Adapt the "option 2" instructions above as follows:
+
+1. Create a second API token, from a second Dynatrace environment. Create a second kubernetes for it as well (ex: `log-ingest2`)
+
+2. Adapt the fluentd config map to include a second API endpoints, and a filter for targeted namespaces as shown in [configmap-multi.yaml](configmap-multi.yaml).
+
+3. Adapt the fluentd.yaml file to reference both API endpoints (`INGEST_ENDPOINT1 and INGEST_ENDPOINT2`) as shown in [fluentd-multi.yaml](fluentd-multi.yaml).
+
+4. Further adapt the same fluentd.yaml to reference both of the secrets you created also show in [fluentd-multi.yaml](fluentd-multi.yaml).

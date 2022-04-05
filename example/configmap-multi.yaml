@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-ingest-configuration
+  namespace: dynatrace
+data:
+  CLUSTER_ID: "${YOUR_CLUSTER_ID}"
+  INGEST_ENDPOINT1: "https://${YOUR_ENVIRONMENT_ID1}.live.dynatrace.com/api/v2/logs/ingest"
+  INGEST_ENDPOINT2: "https://${YOUR_ENVIRONMENT_ID2}.live.dynatrace.com/api/v2/logs/ingest"
+  fluent.conf: |
+    # Ingest logs from nodes
+    <source>
+      @id in_tail_container_logs
+      @type tail
+      tag raw.kubernetes.*
+      path /var/log/containers/*.log
+      pos_file /var/log/fluentd.pos
+      read_from_head true
+      <parse>
+        @type multi_format
+        <pattern>
+          format json
+          time_format %Y-%m-%dT%H:%M:%S.%NZ
+        </pattern>
+        <pattern>
+          format regexp
+          time_format %Y-%m-%dT%H:%M:%S.%N%:z
+          expression /^(?<time>.+)\b(?<stream>stdout|stderr)\b(?<log>.*)$/
+        </pattern>
+      </parse>
+    </source>
+
+    # Detect exceptions in the log output and forward them as one log entry.
+    <match raw.kubernetes.**>
+      @id raw.kubernetes
+      @type detect_exceptions
+      remove_tag_prefix raw
+      message log
+      stream stream
+      multiline_flush_interval 5
+      max_bytes 500000
+      max_lines 1000
+    </match>
+
+    # Concatenate multi-line logs
+    <filter **>
+      @id filter_concat
+      @type concat
+      key message
+      multiline_end_regexp /\n$/
+      separator ""
+    </filter>
+
+    # Enrich with kubernetes metadata
+    <filter kubernetes.**>
+      @type kubernetes_metadata
+    </filter>
+
+    # Transform metadata to records
+    <filter kubernetes.**>
+      @type record_transformer
+      enable_ruby true
+        <record>
+          status ${ record.dig(:log, :severity) || record.dig(:log, :level) || (record["log"] =~ /\W?\berror\b\W?/i ? "ERROR" : (record["log"] =~ /\W?\bwarn\b\W?/i ? "WARN" : (record["log"] =~ /\W?\bdebug\b\W?/i ? "DEBUG" : (record["log"] =~ /\W?\binfo\b\W?/i ? "INFO" : "NONE")))) }
+          content ${record["log"]}
+          container.name ${record.dig("kubernetes","container_name")}
+          container.image.name ${record.dig("kubernetes","container_image").split(':')[0]}
+          container.image.tag ${record.dig("kubernetes","container_image").split(':')[1]}
+          dt.kubernetes.node.name ${record.dig("kubernetes","host")}
+          dt.kubernetes.cluster.id "#{ENV['CLUSTER_ID']}"
+          dt.kubernetes.node.system_uuid ${File.read("/sys/devices/virtual/dmi/id/product_uuid").strip}
+          k8s.pod.labels ${record.dig("kubernetes","labels")}
+          k8s.namespace.uid ${record.dig("kubernetes","namespace_id")}
+          k8s.namespace.name ${record.dig("kubernetes","namespace_name")}
+          k8s.pod.name ${record.dig("kubernetes","pod_name")}
+          k8s.pod.uid ${record.dig("kubernetes","pod_id")}
+        </record>
+        remove_keys log, stream, docker, kubernetes
+    </filter>
+
+    <match kubernetes.**>
+      @type rewrite_tag_filter
+      <rule>
+        key k8s.namespace.name
+        pattern ^(.+)$
+        tag $1.${tag}
+      </rule>
+    </match>
+
+    <match namespace1.kubernetes.**>
+      @type dynatrace
+      active_gate_url "#{ENV['INGEST_ENDPOINT1']}"
+      api_token "#{ENV['LOG_INGEST_TOKEN1']}"
+      ssl_verify_none true
+      <buffer>
+        retry_max_times 3
+      </buffer>
+    </match>
+
+    <match namespace2.kubernetes.**>
+      @type dynatrace
+      active_gate_url "#{ENV['INGEST_ENDPOINT2']}"
+      api_token "#{ENV['LOG_INGEST_TOKEN2']}"
+      ssl_verify_none true
+      <buffer>
+        retry_max_times 3
+      </buffer>
+    </match>
+
+    <system>
+        log_level info
+    </system>
