@@ -5,8 +5,8 @@ metadata:
   namespace: dynatrace
 data:
   CLUSTER_ID: "${YOUR_CLUSTER_ID}"
-  INGEST_ENDPOINT1: "https://${YOUR_ENVIRONMENT_ID1}.live.dynatrace.com/api/v2/logs/ingest"
-  INGEST_ENDPOINT2: "https://${YOUR_ENVIRONMENT_ID2}.live.dynatrace.com/api/v2/logs/ingest"
+  INGEST_ENDPOINT_1: "https://${YOUR_ENVIRONMENT_ID_1}.live.dynatrace.com/api/v2/logs/ingest"
+  INGEST_ENDPOINT_2: "https://${YOUR_ENVIRONMENT_ID_2}.live.dynatrace.com/api/v2/logs/ingest"
   fluent.conf: |
     # Ingest logs from nodes
     <source>
@@ -89,8 +89,8 @@ data:
 
     <match namespace1.kubernetes.**>
       @type dynatrace
-      active_gate_url "#{ENV['INGEST_ENDPOINT1']}"
-      api_token "#{ENV['LOG_INGEST_TOKEN1']}"
+      active_gate_url "#{ENV['INGEST_ENDPOINT_1']}"
+      api_token "#{ENV['LOG_INGEST_TOKEN_1']}"
       ssl_verify_none true
       <buffer>
         retry_max_times 3
@@ -99,8 +99,8 @@ data:
 
     <match namespace2.kubernetes.**>
       @type dynatrace
-      active_gate_url "#{ENV['INGEST_ENDPOINT2']}"
-      api_token "#{ENV['LOG_INGEST_TOKEN2']}"
+      active_gate_url "#{ENV['INGEST_ENDPOINT_2']}"
+      api_token "#{ENV['LOG_INGEST_TOKEN_2']}"
       ssl_verify_none true
       <buffer>
         retry_max_times 3

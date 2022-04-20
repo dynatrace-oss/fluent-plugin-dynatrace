@@ -40,26 +40,26 @@ spec:
             configMapKeyRef:
               name: fluentd-ingest-configuration
               key: CLUSTER_ID
-        - name: INGEST_ENDPOINT1
+        - name: INGEST_ENDPOINT_1
           valueFrom:
             configMapKeyRef:
               name: fluentd-ingest-configuration
-              key: INGEST_ENDPOINT1
-        - name: INGEST_ENDPOINT2
+              key: INGEST_ENDPOINT_1
+        - name: INGEST_ENDPOINT_2
           valueFrom:
             configMapKeyRef:
               name: fluentd-ingest-configuration
-              key: INGEST_ENDPOINT2
-        - name: LOG_INGEST_TOKEN1
+              key: INGEST_ENDPOINT_2
+        - name: LOG_INGEST_TOKEN_1
           valueFrom:
             secretKeyRef:
               name: tokens
               key: log-ingest
-        - name: LOG_INGEST_TOKEN2
+        - name: LOG_INGEST_TOKEN_2
           valueFrom:
             secretKeyRef:
-              name: tokens2
-              key: log-ingest
+              name: tokens
+              key: log-ingest2
         resources:
           limits:
             cpu: 200m
