@@ -85,7 +85,7 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
     agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
     options = {
-      'User-Agent' => "fluent-plugin-dynatrace-tests v#{Fluent::Plugin::DynatraceOutputConstants.version}"
+      'User-Agent' => "fluent-plugin-dynatrace-tests/#{Fluent::Plugin::DynatraceOutputConstants.version}"
     }
     req = Net::HTTP::Get.new(uri, options)
     req['Authorization'] = "Api-Token #{api_token}"
