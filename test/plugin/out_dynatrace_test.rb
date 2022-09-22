@@ -224,7 +224,7 @@ class MyOutputTest < Test::Unit::TestCase
 
       content = d.instance.agent.result.data[0]
 
-      assert_equal "fluent-plugin-dynatrace v#{Fluent::Plugin::DynatraceOutputConstants.version}",
+      assert_equal "fluent-plugin-dynatrace/#{Fluent::Plugin::DynatraceOutputConstants.version}",
                    d.instance.agent.result.headers['user-agent']
       assert_equal content['message'], 'this is a test message'
       assert_equal content['amount'], 53
