@@ -30,7 +30,7 @@ const server = http.createServer((req, res) => {
       process.stdout.write("Missing user agent header");
     }
 
-    if (!ua.match(/^fluent-plugin-dynatrace v\d+\.\d+\.\d+$/)) {
+    if (!ua.match(/^fluent-plugin-dynatrace\/\d+\.\d+\.\d+$/)) {
       process.stdout.write("Invalid user agent header");
     }
 

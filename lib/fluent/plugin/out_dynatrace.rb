@@ -122,7 +122,7 @@ module Fluent
       #############################################
 
       def user_agent
-        "fluent-plugin-dynatrace v#{DynatraceOutputConstants.version}"
+        "fluent-plugin-dynatrace/#{DynatraceOutputConstants.version}"
       end
 
       def prepare_request
