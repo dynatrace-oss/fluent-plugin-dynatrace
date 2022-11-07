@@ -72,6 +72,10 @@ Build the FluentD docker image provided in our example and upload it to your rep
 3. Deploy `fluentd.yaml`
 
    ``kubectl apply -f fluentd.yaml``
+   
+> **Note**: When running this example on **OpenShift**, you'll need to run the fluentd container as a privileged container,
+as the daemonset setting mounts `/var/log` using the service account `fluentd`. See [https://github.com/fluent/fluentd-kubernetes-daemonset#running-on-openshift](https://github.com/fluent/fluentd-kubernetes-daemonset/blob/ce4b80e0a1ac2b077bbcf4b1c3a243ac5dae1aa2/README.md#running-on-openshift)
+for an example.
 
 ## Sending logs to different Dynatrace environments
 
