@@ -2,14 +2,14 @@
 
 > This project is developed, maintained and supported by Dynatrace.
 
-A fluentd output plugin for sending logs to the Dynatrace [Generic log ingest API v2](https://www.dynatrace.com/support/help/how-to-use-dynatrace/log-monitoring/log-monitoring-v2/post-log-ingest/).
+A fluentd output plugin for sending logs to the Dynatrace [Generic log ingest API v2](https://www.dynatrace.com/support/help/shortlink/log-monitoring-log-data-ingestion).
 
 ## Requirements
 
 - An instance of fluentd >= v1.0 from which logs should be exported
 - Ruby version >= 2.4.0
-- An ActiveGate with the Generic log ingest API v2 enabled as described in the [Dynatrace documentation](https://www.dynatrace.com/support/help/how-to-use-dynatrace/log-monitoring/log-monitoring-v2/log-data-ingestion/)
-- A [Dynatrace API token](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/) with the `logs.ingest` (Ingest Logs) scope
+- An ActiveGate with the Generic log ingest API v2 enabled as described in the [Dynatrace documentation](https://www.dynatrace.com/support/help/shortlink/log-monitoring-log-data-ingestion)
+- A [Dynatrace API token](https://www.dynatrace.com/support/help/shortlink/api-authentication) with the `logs.ingest` (Ingest Logs) scope
 
 ## Installation
 
@@ -60,13 +60,13 @@ The `@type` directive tells fluentd which plugin should be used for the correspo
 
 - `required`
 
-This is the full URL of the [Generic log ingest API v2](https://www.dynatrace.com/support/help/how-to-use-dynatrace/log-monitoring/log-monitoring-v2/post-log-ingest/) endpoint on your ActiveGate.
+This is the full URL of the [Generic log ingest API v2](https://www.dynatrace.com/support/help/shortlink/log-monitoring-log-data-ingestion) endpoint on your ActiveGate.
 
 ### `api_token`
 
 - `required`
 
-This is the [Dynatrace API token](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/) which will be used to authenticate log ingest requests. It should be assigned only the `logs.ingest` (Ingest Logs) scope.
+This is the [Dynatrace API token](https://www.dynatrace.com/support/help/shortlink/api-authentication) which will be used to authenticate log ingest requests. It should be assigned only the `logs.ingest` (Ingest Logs) scope.
 
 ### `ssl_verify_none`
 
