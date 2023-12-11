@@ -7,7 +7,7 @@ A fluentd output plugin for sending logs to the Dynatrace [Generic log ingest AP
 ## Requirements
 
 - An instance of fluentd >= v1.0 from which logs should be exported
-- Ruby version >= 2.4.0
+- Ruby version >= 2.7.0
 - An ActiveGate with the Generic log ingest API v2 enabled as described in the [Dynatrace documentation](https://www.dynatrace.com/support/help/shortlink/log-monitoring-log-data-ingestion)
 - A [Dynatrace API token](https://www.dynatrace.com/support/help/shortlink/api-authentication) with the `logs.ingest` (Ingest Logs) scope
 
@@ -88,7 +88,7 @@ An full example demonstrating how to set up Fluentd on Kubernetes and export log
 
 ## Development
 
-`fluent-plugin-dynatrace` supports Ruby versions `>= 2.4.0` but it is recommended that at least `2.7.2` is used for development. Ruby versions can be managed with tools like [chruby](https://github.com/postmodern/chruby) or [rbenv](https://github.com/rbenv/rbenv).
+`fluent-plugin-dynatrace` supports Ruby versions `>= 2.7.0` but it is recommended that at least `2.7.2` is used for development. Ruby versions can be managed with tools like [chruby](https://github.com/postmodern/chruby) or [rbenv](https://github.com/rbenv/rbenv).
 
 ### Install Dependencies
 
