@@ -97,7 +97,7 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
     body = JSON.parse(res.body)
     results = body['results']
 
-    return false if results.length.zero?
+    return false if results.empty?
 
     assert_equal(results[0]['content'], nonce)
     true
