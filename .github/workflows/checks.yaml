@@ -8,7 +8,7 @@ on:
 
 env:
   # 3.0 in quotes for https://github.com/actions/runner/issues/849
-  SUPPORTED_VERSIONS: [ 2.7, '3.0', 3.1, 3.2]
+  SUPPORTED_VERSIONS: "[ 2.7, '3.0', 3.1, 3.2]"
 
 jobs:
   supported-versions:
