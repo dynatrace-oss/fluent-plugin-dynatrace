@@ -7,6 +7,9 @@ AllCops:
 Gemspec/DevelopmentDependencies:
   EnforcedStyle: gemspec
 
+Gemspec/RequireMFA:
+  Severity: info
+
 Naming/MethodParameterName:
   Enabled: false
 
