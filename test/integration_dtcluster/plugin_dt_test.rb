@@ -28,7 +28,7 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
 
   def active_gate_url
     # Expect an active gate url in the format https://127.0.0.1:9999/e/abc12345
-    url = ENV['ACTIVE_GATE_URL']
+    url = ENV.fetch('ACTIVE_GATE_URL', nil)
     raise 'expected environment variable ACTIVE_GATE_URL' if url.nil?
 
     url
@@ -36,7 +36,7 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
 
   def api_token
     # Expect an API token with `logs.ingest` (Ingest Logs) and `logs.read` (Read Logs) scope
-    token = ENV['API_TOKEN']
+    token = ENV.fetch('API_TOKEN', nil)
     raise 'expected environment variable API_TOKEN' if token.nil?
 
     token
