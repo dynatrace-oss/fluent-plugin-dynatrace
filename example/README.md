@@ -7,14 +7,14 @@ It is possible to have FluentD ingest the logs of your kubernetes nodes and let 
 Generally needed:
 
 - A Dynatrace namespace, if you do not already have one
-- An [API Token](https://www.dynatrace.com/support/help/dynatrace-api/basics/dynatrace-api-authentication/) with "Ingest logs" permission
+- An [API Token](https://docs.dynatrace.com/docs/shortlink/api-authentication) with "Ingest logs" permission
 - The dynatrace-monitoring service-account
 
    ``kubectl apply -f service-account.yaml``
 
 Only needed in combination with a Dynatrace ActiveGate:
 
-- A [PaaS Token](https://www.dynatrace.com/support/help/get-started/access-tokens/)
+- A [PaaS Token](https://docs.dynatrace.com/docs/shortlink/token)
 - Available persistent storage in your Kubernetes cluster
 
 ## Decide on a log ingest endpoint
