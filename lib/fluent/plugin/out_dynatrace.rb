@@ -31,8 +31,8 @@ module Fluent
       # Configurations
       desc 'The full URL of the Dynatrace log ingestion endpoint, e.g. https://my-active-gate.example.com/api/logs/ingest'
       config_param :active_gate_url, :string
-      desc 'The API token to use to authenticate requests to the log ingestion endpoint. '\
-           'Must have logs.ingest (Ingest Logs) scope. '\
+      desc 'The API token to use to authenticate requests to the log ingestion endpoint. ' \
+           'Must have logs.ingest (Ingest Logs) scope. ' \
            'It is recommended to limit scope to only this one.'
       config_param :api_token, :string, secret: true
 
