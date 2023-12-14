@@ -16,6 +16,7 @@
 
 require 'fluent/plugin/output'
 require 'net/http'
+require 'yajl'
 require_relative 'dynatrace_constants'
 
 module Fluent
@@ -155,7 +156,7 @@ module Fluent
 
       def serialize(records)
         log.on_trace { log.trace('#serialize') }
-        body = "#{records.to_json.chomp}\n"
+        body = "#{Yajl.dump(records)}\n"
         log.on_trace { log.trace("#serialize body length #{body.length}") }
         body
       end

@@ -212,22 +212,26 @@ class MyOutputTest < Test::Unit::TestCase
   end
 
   sub_test_case 'tests for #write' do
-    test 'Write all records as a JSON array' do
+    test 'write all records as a JSON array' do
       d = create_driver
       t = event_time('2016-06-10 19:46:32 +0900')
+      malformed_json_message = "This is a malformed json message V\x92\xA1\u000F\xF0ܱ\u0013,\x82"
       d.run do
         d.feed('tag', t, { 'message' => 'this is a test message', 'amount' => 53 })
         d.feed('tag', t, { 'message' => 'this is a second test message', 'amount' => 54 })
+        d.feed('tag', t, { 'message' => malformed_json_message, 'amount' => 54 })
       end
 
-      assert_equal 2, d.instance.agent.result.data.length
+      assert_equal 3, d.instance.agent.result.data.length
 
       content = d.instance.agent.result.data[0]
+      malformed_json_content = d.instance.agent.result.data[2]
 
       assert_equal "fluent-plugin-dynatrace/#{Fluent::Plugin::DynatraceOutputConstants.version}",
                    d.instance.agent.result.headers['user-agent']
       assert_equal content['message'], 'this is a test message'
       assert_equal content['amount'], 53
+      assert_equal malformed_json_content['message'], malformed_json_message
     end
 
     test 'should not export an empty payload' do
