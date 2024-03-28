@@ -64,7 +64,7 @@ Dynatrace plugin uses a default chunk size that may be too small for Kubernetes 
 
 ```chunk_limit_size 300K```
 
-This means that the plugin will wait until the buffer reaches that size to send to Dynatrace. If logs are generated very infrequently, that may take a while until logs start to appear in Dynatrace. Adjust this size to your needs, but bare in mind that using a too small value may prevent the logs from ever being sent to Dynatrace in case a single line of log is bigger than the chunk size.
+This means that the plugin will wait until the buffer reaches that size to send to Dynatrace. If logs are generated very infrequently, that may take a while until logs start to appear in Dynatrace. Adjust this size to your needs, but bare in mind that using a too small value may prevent the logs from ever being sent to Dynatrace in case a single line of log is bigger than the chunk size. This in reference to step 1 above.
 
 ## Build FluentD docker image
 
