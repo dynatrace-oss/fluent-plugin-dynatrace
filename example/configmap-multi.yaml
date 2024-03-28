@@ -104,6 +104,7 @@ data:
       ssl_verify_none true
       <buffer>
         retry_max_times 3
+        chunk_limit_size 300K
       </buffer>
     </match>
 

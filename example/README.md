@@ -58,6 +58,14 @@ Not only your ActiveGate presents an endpoint, but also your Dynatrace environme
 2. Deploy Configmap and ActiveGate
    ``kubectl apply -f configmap-saas.yaml``
 
+### Chunk Size configuration
+
+Dynatrace plugin uses a default chunk size that may be too small for Kubernetes monitoring, so the plugin configruation has the buffer configuartion below:
+
+```chunk_limit_size 300K```
+
+This means that the plugin will wait until the buffer reaches that size to send to Dynatrace. If logs are generated very infrequently, that may take a while until logs start to appear in Dynatrace. Adjust this size to your needs, but bare in mind that using a too small value may prevent the logs from ever being sent to Dynatrace in case a single line of log is bigger than the chunk size.
+
 ## Build FluentD docker image
 
 Build the FluentD docker image provided in our example and upload it to your repository. **Depending on the applications running on your cluster you might need to add plugins.**
@@ -76,6 +84,8 @@ Build the FluentD docker image provided in our example and upload it to your rep
 > **Note**: When running this example on **OpenShift**, you'll need to run the fluentd container as a privileged container.
 This is because the daemonset setting mounts `/var/log` using the service account `fluentd`.
 See [https://github.com/fluent/fluentd-kubernetes-daemonset#running-on-openshift] https://github.com/fluent/fluentd-kubernetes-daemonset/blob/ce4b80e0a1ac2b077bbcf4b1c3a243ac5dae1aa2/README.md#running-on-openshift) for an example.
+
+> **Note**: Please pay attention that this deployment uses the fluentd image (built on the step above) and also the **busybox** image as an init container. Many customers have restrictions to pull images from repositories **outside** of their companies, in that case all images must be on an internal repository. In this case please pull the busybox image and push it to an internal repository. Edit the fluentd.yaml file with that image otherwise the init container will fail, consquently the whole pod will fail. Change ```image: busybox``` to ```image: ${YOUR_INTERNAL_BUSYBOX_IMAGE}```
 
 ## Sending logs to different Dynatrace environments
 
