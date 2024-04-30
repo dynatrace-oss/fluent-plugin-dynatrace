@@ -46,7 +46,6 @@ module Fluent
 
       config_section :buffer do
         config_set_default :flush_at_shutdown, true
-        config_set_default :chunk_limit_size, 10 * 1024
       end
 
       # Default injection parameters.
