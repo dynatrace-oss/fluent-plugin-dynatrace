@@ -33,9 +33,12 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
-      - run: |
-          gem install bundler
-          bundle install
+      # The last version of bundler (>= 0) to support your Ruby & RubyGems was 2.4.22.
+      - run: gem install bundler
+        if: ${{ matrix.ruby-version != '2.7' }}
+      - run: gem install bundler -v 2.4.22
+        if: ${{ matrix.ruby-version == '2.7' }}
+      - run: bundle install
       - run: rake test
   lint:
     runs-on: ubuntu-latest
@@ -62,9 +65,12 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
-      - run: |
-          gem install bundler
-          bundle install
+      # The last version of bundler (>= 0) to support your Ruby & RubyGems was 2.4.22.
+      - run: gem install bundler
+        if: ${{ matrix.ruby-version != '2.7' }}
+      - run: gem install bundler -v 2.4.22
+        if: ${{ matrix.ruby-version == '2.7' }}
+      - run: bundle install
       - run: rake test:integration:fluent
   all-passed:
     needs: [unit-test,lint,integration-test]
