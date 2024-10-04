@@ -41,7 +41,7 @@ class TestFluentPluginIntegration < Test::Unit::TestCase
     puts 'waiting 10s for output plugin to flush'
     sleep 10
 
-    logs = `docker logs fixtures_logsink_1`
+    logs = `docker logs fixtures-logsink-1`
 
     line1 = '[{"foo":"bar"},{"abc":"def"},{"xyz":"123"},{"abc":"def"},{"xyz":"123"}]'
     line2 = '[{"abc":"def"},{"xyz":"123"}]'
