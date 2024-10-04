@@ -69,8 +69,8 @@ data:
           status ${ record.dig(:log, :severity) || record.dig(:log, :level) || (record["log"] =~ /\W?\berror\b\W?/i ? "ERROR" : (record["log"] =~ /\W?\bwarn\b\W?/i ? "WARN" : (record["log"] =~ /\W?\bdebug\b\W?/i ? "DEBUG" : (record["log"] =~ /\W?\binfo\b\W?/i ? "INFO" : "NONE")))) }
           content ${record["log"]}
           container.name ${record.dig("kubernetes","container_name")}
-          container.image.name ${record.dig("kubernetes","container_image").split(':')[0]}
-          container.image.tag ${record.dig("kubernetes","container_image").split(':')[1]}
+          container.image.name ${record.dig("kubernetes","container_image")&.split(':')&.[](0)}
+          container.image.tag ${record.dig("kubernetes","container_image")&.split(':')&.[](1)}
           dt.kubernetes.node.name ${record.dig("kubernetes","host")}
           dt.kubernetes.cluster.id "#{ENV['CLUSTER_ID']}"
           dt.kubernetes.node.system_uuid ${File.read("/sys/devices/virtual/dmi/id/product_uuid").strip}
