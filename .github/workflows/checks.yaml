@@ -7,12 +7,13 @@ on:
   pull_request:
 
 env:
-  # 3.0 in quotes for https://github.com/actions/runner/issues/849
-  SUPPORTED_VERSIONS: "[ 2.7, '3.0', 3.1, 3.2]"
+  # Supported Ruby releases (fluent-package v6 LTS bundles 3.4).
+  # Quoted so 4.0 isn't read as 4: https://github.com/actions/runner/issues/849
+  SUPPORTED_VERSIONS: "['3.3', '3.4', '4.0']"
 
 jobs:
   supported-versions:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -21,60 +22,58 @@ jobs:
         echo "matrix=${{env.SUPPORTED_VERSIONS}}" >> $GITHUB_OUTPUT
   unit-test:
     needs: supported-versions
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
         ruby-version: ${{fromJson(needs.supported-versions.outputs.matrix)}}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Ruby ${{ matrix.ruby-version }}
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
         with:
           ruby-version: ${{ matrix.ruby-version }}
-      # The last version of bundler (>= 0) to support your Ruby & RubyGems was 2.4.22.
-      - run: gem install bundler
-        if: ${{ matrix.ruby-version != '2.7' }}
-      - run: gem install bundler -v 2.4.22
-        if: ${{ matrix.ruby-version == '2.7' }}
-      - run: bundle install
-      - run: rake test
+          bundler-cache: true
+      - run: bundle exec rake test
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
         with:
-          ruby-version: 3
-      - run: |
-          gem install bundler
-          bundle install
-      - run: rake rubocop
+          ruby-version: '4.0'
+          bundler-cache: true
+      - run: bundle exec rake rubocop
   integration-test:
     needs: supported-versions
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
         ruby-version: ${{fromJson(needs.supported-versions.outputs.matrix)}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up Ruby ${{ matrix.ruby-version }}
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
         with:
           ruby-version: ${{ matrix.ruby-version }}
-      # The last version of bundler (>= 0) to support your Ruby & RubyGems was 2.4.22.
-      - run: gem install bundler
-        if: ${{ matrix.ruby-version != '2.7' }}
-      - run: gem install bundler -v 2.4.22
-        if: ${{ matrix.ruby-version == '2.7' }}
-      - run: bundle install
-      - run: rake test:integration:fluent
-  all-passed:
-    needs: [unit-test,lint,integration-test]
-    runs-on: ubuntu-latest
+          bundler-cache: true
+      - run: bundle exec rake test:integration:fluent
+  # Single stable check for branch protection, so the Ruby matrix can change
+  # without touching the required status checks.
+  test-summary:
+    name: Test summary
+    if: always()
+    needs: [unit-test, lint, integration-test]
+    runs-on: ubuntu-26.04
     steps:
-      - name: All checks passed
-        run: 'true'
+      - name: Check results
+        env:
+          UNIT_RESULT: ${{ needs.unit-test.result }}
+          LINT_RESULT: ${{ needs.lint.result }}
+          INTEGRATION_RESULT: ${{ needs.integration-test.result }}
+        run: |
+          echo "unit-test: $UNIT_RESULT, lint: $LINT_RESULT, integration-test: $INTEGRATION_RESULT"
+          test "$UNIT_RESULT" = success && test "$LINT_RESULT" = success && test "$INTEGRATION_RESULT" = success
