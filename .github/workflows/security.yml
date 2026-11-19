@@ -23,7 +23,8 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
         with:
-          ruby-version: '3'
+          # Ruby bundled with fluent-package v6 LTS; bundle lock resolves for this version.
+          ruby-version: '3.4'
 
       - name: Resolve dependencies
         # No Gemfile.lock is committed (gem convention). Resolve one from the gem's runtime
@@ -72,7 +73,8 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@f9c4492e86def3e644ab32a0ef185eda5b0c20d0 # v1.342.0
         with:
-          ruby-version: '3'
+          # Ruby bundled with fluent-package v6 LTS; bundle lock resolves for this version.
+          ruby-version: '3.4'
 
       - name: Resolve dependencies
         # No Gemfile.lock is committed (gem convention). Resolve one from the gem's runtime
