@@ -34,7 +34,8 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby-version }}
       # The last version of bundler (>= 0) to support your Ruby & RubyGems was 2.4.22.
-      - run: gem install bundler
+      # The gemspec requires bundler < 3; plain `gem install bundler` now installs 4.x.
+      - run: gem install bundler -v '< 3'
         if: ${{ matrix.ruby-version != '2.7' }}
       - run: gem install bundler -v 2.4.22
         if: ${{ matrix.ruby-version == '2.7' }}
@@ -49,7 +50,7 @@ jobs:
         with:
           ruby-version: 3
       - run: |
-          gem install bundler
+          gem install bundler -v '< 3'
           bundle install
       - run: rake rubocop
   integration-test:
@@ -66,7 +67,8 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby-version }}
       # The last version of bundler (>= 0) to support your Ruby & RubyGems was 2.4.22.
-      - run: gem install bundler
+      # The gemspec requires bundler < 3; plain `gem install bundler` now installs 4.x.
+      - run: gem install bundler -v '< 3'
         if: ${{ matrix.ruby-version != '2.7' }}
       - run: gem install bundler -v 2.4.22
         if: ${{ matrix.ruby-version == '2.7' }}
