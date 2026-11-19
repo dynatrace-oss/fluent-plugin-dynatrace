@@ -71,14 +71,14 @@ class TestPluginDynatraceIntegration < Test::Unit::TestCase
 
     MAX_ATTEMPTS.times do |i|
       puts "Getting logs attempt #{i + 1}/#{MAX_ATTEMPTS}"
-      break if try_get_log(nonce)
+      break if log_found?(nonce)
       raise "Could not retrieve log after #{MAX_ATTEMPTS} attempts" if i == MAX_ATTEMPTS - 1
 
       sleep 10
     end
   end
 
-  def try_get_log(nonce)
+  def log_found?(nonce)
     uri = URI.parse("#{active_gate_url}/api/v2/logs/search?from=now-30m&limit=1000&query=#{nonce}&sort=-timestamp")
     agent = Net::HTTP.new(uri.host, uri.port)
     agent.use_ssl = true

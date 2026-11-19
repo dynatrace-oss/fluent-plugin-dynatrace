@@ -110,7 +110,7 @@ module Fluent
 
       #############################################
 
-      def prefer_buffered_processing
+      def prefer_buffered_processing # rubocop:disable Naming/PredicateMethod -- fluentd API name
         true
       end
 
