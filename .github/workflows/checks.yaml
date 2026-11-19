@@ -7,9 +7,9 @@ on:
   pull_request:
 
 env:
-  # Supported Ruby releases, plus 3.2 (bundled with fluent-package v5 LTS).
+  # Supported Ruby releases (fluent-package v6 LTS bundles 3.4).
   # Quoted so 4.0 isn't read as 4: https://github.com/actions/runner/issues/849
-  SUPPORTED_VERSIONS: "['3.2', '3.3', '3.4', '4.0']"
+  SUPPORTED_VERSIONS: "['3.3', '3.4', '4.0']"
 
 jobs:
   supported-versions:
