@@ -53,7 +53,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          base_image=$(awk 'toupper($1) == "FROM" { print $2; exit }' example/Dockerfile)
+          base_image=$(awk 'toupper($1) == "FROM" { print $2; exit }' example/Dockerfile | tr -d '\r')
           snyk container monitor "${base_image}" --file=example/Dockerfile \
             --project-name=dynatrace-oss/fluent-plugin-dynatrace:example/Dockerfile
 
@@ -101,5 +101,5 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          base_image=$(awk 'toupper($1) == "FROM" { print $2; exit }' example/Dockerfile)
+          base_image=$(awk 'toupper($1) == "FROM" { print $2; exit }' example/Dockerfile | tr -d '\r')
           snyk container test "${base_image}" --file=example/Dockerfile --severity-threshold=low
