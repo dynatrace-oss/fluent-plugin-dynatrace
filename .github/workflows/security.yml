@@ -40,6 +40,23 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: snyk monitor --file=snyk-runtime/Gemfile.lock --project-name=dynatrace-oss/fluent-plugin-dynatrace
 
+      - name: Run Snyk on example Kubernetes manifests
+        if: ${{ !cancelled() }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        # --report uploads the results to Snyk. Exit code 1 only means issues were found,
+        # which is expected here: monitoring reports findings but does not fail on them.
+        run: snyk iac test example --report --target-name=dynatrace-oss/fluent-plugin-dynatrace || [ "$?" -eq 1 ]
+
+      - name: Run Snyk on example Dockerfile base image
+        if: ${{ !cancelled() }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          base_image=$(awk 'toupper($1) == "FROM" { print $2; exit }' example/Dockerfile)
+          snyk container monitor "${base_image}" --file=example/Dockerfile \
+            --project-name=dynatrace-oss/fluent-plugin-dynatrace:example/Dockerfile
+
   test:
     name: Test for security vulnerabilities (no upload)
     # Manual runs on other branches only report locally via `snyk test`;
@@ -72,3 +89,17 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: snyk test --severity-threshold=low --file=snyk-runtime/Gemfile.lock
+
+      - name: Run Snyk on example Kubernetes manifests
+        if: ${{ !cancelled() }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk iac test example --severity-threshold=low
+
+      - name: Run Snyk on example Dockerfile base image
+        if: ${{ !cancelled() }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          base_image=$(awk 'toupper($1) == "FROM" { print $2; exit }' example/Dockerfile)
+          snyk container test "${base_image}" --file=example/Dockerfile --severity-threshold=low
