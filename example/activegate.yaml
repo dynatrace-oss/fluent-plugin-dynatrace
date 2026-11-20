@@ -70,7 +70,7 @@ spec:
                 - linux
       initContainers:
       - name: activegate-permission-fix
-        image: busybox
+        image: busybox@sha256:a46257e06c82ad85242d0d38077d0a52d9896389ca60a1a59d3463db586e5fa4
         command: ["sh","-c","chmod -R 770 /media/datastore/security-gateway/log-ingest-queue/; "]
         volumeMounts:
         - name: activegate-log-queue
