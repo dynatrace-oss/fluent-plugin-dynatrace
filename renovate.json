@@ -1,0 +1,39 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    "schedule:nonOfficeHours",
+    "customManagers:githubActionsVersions"
+  ],
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 25,
+  "minimumReleaseAge": "3 days",
+  "minimumReleaseAgeBehaviour": "timestamp-optional",
+  "timezone": "Europe/Vienna",
+  "rebaseWhen": "behind-base-branch",
+  "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions deps"
+    },
+    {
+      "matchFileNames": ["*.gemspec"],
+      "groupName": "ruby dev deps"
+    }
+  ],
+  "kubernetes": {
+    "managerFilePatterns": ["/^example/.*\\.ya?ml$/"]
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Pinned dev dependencies in the gemspec. The runtime fluentd range is left alone: it is the range users get, not a pin.",
+      "managerFilePatterns": ["/\\.gemspec$/"],
+      "matchStrings": [
+        "add_development_dependency\\s+['\"](?<depName>[^'\"]+)['\"],\\s*['\"](?<currentValue>[^'\"]+)['\"]"
+      ],
+      "datasourceTemplate": "rubygems",
+      "versioningTemplate": "ruby"
+    }
+  ]
+}
