@@ -1,4 +1,4 @@
-FROM fluent/fluentd-kubernetes-daemonset:v1.14-debian-forward-amd64-1@sha256:7565afd281daf1225782c3eb5dead20d73e33ab1d22582a26980fcef60bc3db3
+FROM fluent/fluentd-kubernetes-daemonset:v1.20-debian-forward-amd64-1@sha256:86dfc99d17419064610310fcc24b5843b98f4ba24e5ff208240554a7a99ada51
 
 USER root
 WORKDIR /
