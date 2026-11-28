@@ -25,7 +25,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency 'fluentd', ['>= 0.14.22', '< 2']
   gem.add_development_dependency 'rake', '13.4.2'
-  gem.add_development_dependency 'rubocop', '1.92.3'
+  gem.add_development_dependency 'rubocop', '1.93.0'
   gem.add_development_dependency 'rubocop-rake', '0.7.1'
-  gem.add_development_dependency 'test-unit', '3.7.8'
+  gem.add_development_dependency 'test-unit', '3.7.9'
 end
